@@ -1,5 +1,15 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+// Restricted to the invoking HANDVERSE window; no arbitrary window labels or code.
+#[tauri::command]
+fn holospace_fullscreen(window: tauri::WebviewWindow, enabled: bool) -> Result<(), String> {
+    window.set_fullscreen(enabled).map_err(|e| e.to_string())
+}
+#[tauri::command]
+fn holospace_is_fullscreen(window: tauri::WebviewWindow) -> Result<bool, String> {
+    window.is_fullscreen().map_err(|e| e.to_string())
+}
+
 struct Automation {
     screenshot: Option<std::path::PathBuf>,
     self_test: Option<std::path::PathBuf>,
@@ -145,8 +155,8 @@ fn main() {
         })
         .manage(Automation { screenshot, self_test, runtime_test });
     #[cfg(target_os = "macos")]
-    let builder = builder.invoke_handler(tauri::generate_handler![automation_options, finish_screenshot, finish_self_test, native_tracking_available, track_hands]);
+    let builder = builder.invoke_handler(tauri::generate_handler![holospace_fullscreen, holospace_is_fullscreen, automation_options, finish_screenshot, finish_self_test, native_tracking_available, track_hands]);
     #[cfg(not(target_os = "macos"))]
-    let builder = builder.invoke_handler(tauri::generate_handler![automation_options, finish_self_test, native_tracking_available]);
+    let builder = builder.invoke_handler(tauri::generate_handler![holospace_fullscreen, holospace_is_fullscreen, automation_options, finish_self_test, native_tracking_available]);
     builder.run(context).expect("Unable to start HANDVERSE");
 }

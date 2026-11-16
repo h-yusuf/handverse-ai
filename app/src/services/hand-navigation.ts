@@ -18,4 +18,7 @@ export function activate(target:HTMLElement){
  else target.click();
 }
 
-export function ownsUI(scope:'global'|'ar'|'ui'|'canvas',insideAR:boolean){return scope==='global'||!insideAR;}
+export function ownsUI(scope:'global'|'ar'|'ui'|'canvas'|'holospace',insideAR:boolean){return scope==='holospace'||scope==='global'||!insideAR;}
+
+// HoloSpace handles selection and manipulation atomically; the shared cursor still renders.
+export function allowsGlobalActivation(scope:string){return scope!=='holospace';}

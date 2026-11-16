@@ -1,7 +1,7 @@
 import {useEffect,useRef} from 'react';
 import {useHandTracking} from './HandTrackingProvider';
 import {settings} from './services/storage';
-import {PinchGate,interactiveAt,activate,ownsUI} from './services/hand-navigation';
+import {PinchGate,interactiveAt,activate,ownsUI,allowsGlobalActivation} from './services/hand-navigation';
 export {connections} from './services/hand-landmarks';
 export function TrackingLayer(){
  const vision=useHandTracking(),canvas=useRef<HTMLCanvasElement>(null);
@@ -14,7 +14,7 @@ export function TrackingLayer(){
   const choose=(x:number,y:number)=>{const target=interactiveAt(x,y);if(target){feedback={x,y,at:performance.now()};activate(target);dwelled=true;}};
   const unsubscribe=vision.subscribeHands(hands=>{
    primary=hands.find(h=>h.id===primary)?.id??hands[0]?.id;
-   for(const hand of hands){const pressed=gate.update(hand);if(pressed&&hand.id===primary&&!document.hidden&&!(vision.interactionScope==='canvas'&&vision.ownsCanvasInput?.(hand))&&ownsUI(vision.interactionScope,insideOwnedRegion(hand.cursor.x*innerWidth,hand.cursor.y*innerHeight)))choose(Math.min(innerWidth-1,hand.cursor.x*innerWidth),Math.min(innerHeight-1,hand.cursor.y*innerHeight));}
+   for(const hand of hands){const pressed=gate.update(hand);if(allowsGlobalActivation(vision.interactionScope)&&pressed&&hand.id===primary&&!document.hidden&&!(vision.interactionScope==='canvas'&&vision.ownsCanvasInput?.(hand))&&ownsUI(vision.interactionScope,insideOwnedRegion(hand.cursor.x*innerWidth,hand.cursor.y*innerHeight)))choose(Math.min(innerWidth-1,hand.cursor.x*innerWidth),Math.min(innerHeight-1,hand.cursor.y*innerHeight));}
   });
   const frame=(now:number)=>{
    const el=canvas.current!,c=el.getContext('2d')!;
@@ -30,7 +30,7 @@ export function TrackingLayer(){
     c.globalAlpha=1;c.shadowColor=color;c.shadowBlur=16;c.fillStyle=color;c.beginPath();c.arc(x,y,3,0,7);c.fill();c.lineWidth=hand.pinching?4:1.5;c.beginPath();c.arc(x,y,hand.pinching?10:19,0,7);c.stroke();c.shadowBlur=0;
     const target=interactiveAt(x,y);
     if(target!==hover){clearHover();hover=target;hover?.classList.add('hand-hover');since=now;}
-    if(hover&&settings.dwell&&!dwelled&&!hand.pinching){const t=Math.min(1,(now-since)/1100);c.lineWidth=3;c.beginPath();c.arc(x,y,24,-Math.PI/2,-Math.PI/2+t*Math.PI*2);c.stroke();if(t>=1)choose(x,y);}
+    if(allowsGlobalActivation(vision.interactionScope)&&hover&&settings.dwell&&!dwelled&&!hand.pinching){const t=Math.min(1,(now-since)/1100);c.lineWidth=3;c.beginPath();c.arc(x,y,24,-Math.PI/2,-Math.PI/2+t*Math.PI*2);c.stroke();if(t>=1)choose(x,y);}
    }else{history.length=0;clearHover();}
    if(feedback&&now-feedback.at<280){c.strokeStyle='#8ce7ed';c.globalAlpha=1-(now-feedback.at)/280;c.lineWidth=3;c.beginPath();c.arc(feedback.x,feedback.y,20+(now-feedback.at)/10,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
    raf=requestAnimationFrame(frame);

@@ -4,7 +4,7 @@ export type Tracking={status:'off'|'loading'|'active'|'error';cameraActive:boole
 export class Vision {
  video=document.createElement('video');stream:MediaStream|null=null;model:Landmarker|null=null;
  data:Tracking={status:'off',cameraActive:false,message:'Camera is off',hands:[],fps:0,latency:0,delegate:'—',devices:[]};
- interactionScope:'global'|'ar'|'ui'|'canvas'='global';
+ interactionScope:'global'|'ar'|'ui'|'canvas'|'holospace'='global';
  ownsCanvasInput:((hand:Hand)=>boolean)|null=null;
  calibration:Calibration=identity;quality=30;private timer=0;private generation=0;private machines=new Map<string,GestureMachine>();private lastVideo=-1;private lastInference=0;private lastTimestamp=-1;private lastFound=0;private notifyAt=0;private frames=0;private epoch=0;
  private changes=new Set<()=>void>();private handListeners=new Set<(hands:Hand[])=>void>();
