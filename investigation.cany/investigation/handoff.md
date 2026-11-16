@@ -1,0 +1,3 @@
+# Handoff
+
+User asked Indonesian 'apakah sudah di push?' Confirmed neither workspace nor app/ has .git; git -C app status reports not a git repository. No push performed; remote state not verified. Updated app/docs/VALIDATION.md with push status and fresh results. npm run tauri build -- --bundles app exited 0, rebuilt 21.51 MiB HANDVERSE.app with nine existing nonfatal objc macro warnings. rebuild_check passed build, launch/screenshot 2880x1880 and pointer gameplay/HUD; reference mechanics comparisons and physical-camera/two-hand tests remain unverified. Existing publication instructions app/docs/RELEASING.md preserve upstream history. No source changes needed for status question.

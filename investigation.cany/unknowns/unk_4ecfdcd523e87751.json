@@ -1,0 +1,13 @@
+{
+  "id": "unk_4ecfdcd523e87751",
+  "revision": 1,
+  "question": "Can the real webcam and two-hand tracking be validated on this host? Implementation will use local MediaPipe; hardware results remain unverified until an actual permission and camera session succeeds.",
+  "severity": "high",
+  "domain": "general",
+  "status": "open",
+  "probes": [
+    "Run bundled app, grant camera, track both hands and pinch a game card; check tracking loss and stop releases camera."
+  ],
+  "evidence_for": [],
+  "evidence_against": []
+}

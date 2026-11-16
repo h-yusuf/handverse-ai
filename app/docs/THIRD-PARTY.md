@@ -1,0 +1,12 @@
+# Third-party redistribution review
+
+This is a dependency review, not an application license or legal clearance. The owner must select HANDVERSE's license and approve the complete redistribution inventory before public distribution.
+
+- MediaPipe Tasks Vision is pinned to npm `@mediapipe/tasks-vision` 0.10.32, declared Apache-2.0 by its package metadata. Preserve upstream copyright/license headers in vendor JS and loaders; the Apache-2.0 text and a provenance notice are bundled in public/third-party/, alongside direct frontend runtime dependency licenses. Review applicable transitive notices for distributed runtime binaries. [Upstream source and license](https://github.com/google-ai-edge/mediapipe).
+- Official Hand Landmarker float16 version 1 task bundle: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task ; SHA-256 `fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1`. Keep model provenance distinct from the runtime package license. Review the [official model documentation/model card](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker#models) and confirm the downloaded model's redistribution terms and any attribution requirements with its publisher; do not infer model licensing solely from npm's license.
+- React/React DOM and Vite declare MIT; lucide-react declares ISC. Rust/Tauri dependencies have their own individual license expressions. Lockfiles pin the complete dependency graph. Check shipped dependencies, native frameworks, artwork and fonts, including notices required by transitive packages. Build-tool licensing does not automatically license app assets.
+- WebView2 is a Microsoft redistributable, not part of HANDVERSE's source license. The Windows offline installer increases package size. Review [Microsoft's WebView2 distribution guidance and terms](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution).
+
+The app does not download code/models at runtime. Build-time setup validates the exact model hash and byte-matches runtime assets to the installed pinned package. Preserve both lockfiles, local models and both WASM variants. No API keys are required.
+
+An exhaustive third-party notice bundle and model-rights sign-off are still owner review items; do not claim this document is a complete license audit. No project LICENSE file has been created.

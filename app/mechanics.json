@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "values": [
+    {
+      "name": "playfield width",
+      "group": "general",
+      "value": 1100,
+      "source": "src/games/engine.ts",
+      "unit": "px"
+    },
+    {
+      "name": "playfield height",
+      "group": "general",
+      "value": 620,
+      "source": "src/games/engine.ts",
+      "unit": "px"
+    },
+    {
+      "name": "round duration",
+      "group": "general",
+      "value": 60,
+      "source": "src/games/engine.ts",
+      "unit": "s"
+    },
+    {
+      "name": "starting lives",
+      "group": "general",
+      "value": 3,
+      "source": "src/games/engine.ts",
+      "unit": "lives"
+    },
+    {
+      "name": "combo timeout",
+      "group": "general",
+      "value": 1.5,
+      "source": "src/games/engine.ts",
+      "unit": "s"
+    },
+    {
+      "name": "maximum update delta",
+      "group": "general",
+      "value": 0.05,
+      "source": "src/games/engine.ts",
+      "unit": "s"
+    },
+    {
+      "name": "initial bubbles",
+      "group": "bubble",
+      "value": 12,
+      "source": "src/games/engine.ts \u2014 constructor, addBubble, updateBubble",
+      "unit": "bubbles"
+    },
+    {
+      "name": "minimum bubble radius",
+      "group": "bubble",
+      "value": 20,
+      "source": "src/games/engine.ts \u2014 constructor, addBubble, updateBubble",
+      "unit": "px"
+    },
+    {
+      "name": "maximum bubble radius",
+      "group": "bubble",
+      "value": 47,
+      "source": "src/games/engine.ts \u2014 constructor, addBubble, updateBubble",
+      "unit": "px"
+    },
+    {
+      "name": "small bubble score",
+      "group": "bubble",
+      "value": 20,
+      "source": "src/games/engine.ts \u2014 constructor, addBubble, updateBubble",
+      "unit": "points"
+    },
+    {
+      "name": "large bubble score",
+      "group": "bubble",
+      "value": 10,
+      "source": "src/games/engine.ts \u2014 constructor, addBubble, updateBubble",
+      "unit": "points"
+    },
+    {
+      "name": "fruit slice speed threshold",
+      "group": "fruit",
+      "value": 210,
+      "source": "src/games/engine.ts \u2014 updateFruit",
+      "unit": "px/s"
+    },
+    {
+      "name": "fruit slice score",
+      "group": "fruit",
+      "value": 25,
+      "source": "src/games/engine.ts \u2014 updateFruit",
+      "unit": "points"
+    },
+    {
+      "name": "fruit gravity",
+      "group": "fruit",
+      "value": 700,
+      "source": "src/games/engine.ts \u2014 updateFruit",
+      "unit": "px/s\u00b2"
+    },
+    {
+      "name": "bomb probability",
+      "group": "fruit",
+      "value": 0.15,
+      "source": "src/games/engine.ts \u2014 updateFruit"
+    },
+    {
+      "name": "star score",
+      "group": "stars",
+      "value": 10,
+      "source": "src/games/engine.ts \u2014 updateStars"
+    },
+    {
+      "name": "gold star score",
+      "group": "stars",
+      "value": 50,
+      "source": "src/games/engine.ts \u2014 updateStars"
+    },
+    {
+      "name": "bonus score",
+      "group": "stars",
+      "value": 30,
+      "source": "src/games/engine.ts \u2014 updateStars"
+    },
+    {
+      "name": "maximum lives",
+      "group": "stars",
+      "value": 5,
+      "source": "src/games/engine.ts \u2014 updateStars"
+    },
+    {
+      "name": "winning score",
+      "group": "pong",
+      "value": 7,
+      "source": "src/games/engine.ts \u2014 updatePong",
+      "unit": "points"
+    },
+    {
+      "name": "paddle height",
+      "group": "pong",
+      "value": 104,
+      "source": "src/games/engine.ts \u2014 updatePong",
+      "unit": "px"
+    },
+    {
+      "name": "paddle width",
+      "group": "pong",
+      "value": 16,
+      "source": "src/games/engine.ts \u2014 updatePong",
+      "unit": "px"
+    },
+    {
+      "name": "maximum ball speed",
+      "group": "pong",
+      "value": 760,
+      "source": "src/games/engine.ts \u2014 updatePong",
+      "unit": "px/s"
+    },
+    {
+      "name": "initial horizontal ball speed",
+      "group": "pong",
+      "value": 340,
+      "source": "src/games/engine.ts \u2014 updatePong",
+      "unit": "px/s"
+    },
+    {
+      "name": "gesture hold duration",
+      "group": "gesture",
+      "value": 0.45,
+      "source": "src/games/engine.ts \u2014 update",
+      "unit": "s"
+    },
+    {
+      "name": "maximum combo multiplier",
+      "group": "scoring",
+      "value": 5,
+      "source": "src/games/physics.ts \u2014 award"
+    },
+    {
+      "name": "pinch press threshold",
+      "group": "controls",
+      "value": 0.32,
+      "source": "src/services/input.ts \u2014 GestureMachine.update",
+      "unit": "palm lengths"
+    },
+    {
+      "name": "pinch release threshold",
+      "group": "controls",
+      "value": 0.48,
+      "source": "src/services/input.ts \u2014 GestureMachine.update",
+      "unit": "palm lengths"
+    },
+    {
+      "name": "pinch cooldown",
+      "group": "controls",
+      "value": 350,
+      "source": "src/services/input.ts \u2014 GestureMachine.update",
+      "unit": "ms"
+    },
+    {
+      "name": "tracking loss pause delay",
+      "group": "controls",
+      "value": 1.5,
+      "source": "src/GameView.tsx \u2014 loop",
+      "unit": "s"
+    },
+    {
+      "name": "dwell selection duration",
+      "group": "controls",
+      "value": 1.1,
+      "source": "src/TrackingLayer.tsx \u2014 frame",
+      "unit": "s"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+MediaPipe Tasks Vision 0.10.32
+Copyright Google LLC.
+Runtime source: https://github.com/google-ai-edge/mediapipe
+License: Apache License 2.0, see Apache-2.0.txt.
+Original runtime headers are preserved.
+Official Hand Landmarker model: float16/1/hand_landmarker.task
+Source: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+SHA-256: fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1
+Model terms require separate publisher/owner review; see docs/THIRD-PARTY.md.
+These notices do not license HANDVERSE itself.

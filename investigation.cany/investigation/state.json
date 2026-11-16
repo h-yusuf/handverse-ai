@@ -1,0 +1,30 @@
+{
+  "revision": 12,
+  "brief": null,
+  "plan": [
+    {
+      "title": "Design the arcade and game rules",
+      "status": "doing"
+    },
+    {
+      "title": "Connect the camera and hand controls",
+      "status": "todo"
+    },
+    {
+      "title": "Build all five playable games",
+      "status": "todo"
+    },
+    {
+      "title": "Add calibration, records and settings",
+      "status": "todo"
+    },
+    {
+      "title": "Build, play-test and check the result",
+      "status": "todo"
+    }
+  ],
+  "hypotheses": [],
+  "findings": [],
+  "handoff": "User asked Indonesian 'apakah sudah di push?' Confirmed neither workspace nor app/ has .git; git -C app status reports not a git repository. No push performed; remote state not verified. Updated app/docs/VALIDATION.md with push status and fresh results. npm run tauri build -- --bundles app exited 0, rebuilt 21.51 MiB HANDVERSE.app with nine existing nonfatal objc macro warnings. rebuild_check passed build, launch/screenshot 2880x1880 and pointer gameplay/HUD; reference mechanics comparisons and physical-camera/two-hand tests remain unverified. Existing publication instructions app/docs/RELEASING.md preserve upstream history. No source changes needed for status question.",
+  "updated": "2026-11-16T06:46:45Z"
+}

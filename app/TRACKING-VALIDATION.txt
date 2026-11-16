@@ -1,0 +1,154 @@
+HANDVERSE tracking repair — 2026-11-16
+
+Status: build and asset checks PASS; live webcam tracking remains UNVERIFIED.
+The camera integration and UI were not changed during this repair.
+
+The supplied public/models/hand_landmarker.task is 7,819,105 bytes and contains
+hand_detector.tflite and hand_landmarks_detector.tflite. unzip -t passes.
+SHA-256: fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1
+Official source:
+https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+The file was already present at the start of this turn; a fresh download could
+not be performed because storage.googleapis.com could not resolve in this shell.
+
+Fixed scripts/setup-tracking.mjs: the previous validator assumed the archive
+started with PK, but this valid task bundle starts with two zero bytes then PK.
+Validation now pins the complete model SHA-256, rejecting truncated or HTML files
+without rejecting Google's prefixed task archive. postinstall and prebuild use
+this validator. prebuild also checks every runtime asset against the installed
+@mediapipe/tasks-vision 0.10.32 package.
+
+Existing initialization is correctly configured: local model URL resolved from
+document.baseURI, local WASM directory, VIDEO mode, numHands: 2, GPU first and CPU
+fallback. No camera/UI changes were needed. The Vite base is './'; both browser
+and Tauri resolve the model against their own asset origin. Tauri frontendDist
+is dist, and beforeBuildCommand is npm run build.
+
+Checks performed:
+- npm run build: PASS, including mandatory model/WASM prebuild verification.
+- npm test: PASS, 12 tests. These use mocks, not live hand detections.
+- All six model/runtime assets in dist are byte-identical to public assets.
+- CARGO_NET_OFFLINE=true npm run tauri build: PASS, including frontend build
+  and release bundle at target/release/bundle/macos/HANDVERSE.app.
+  Existing Objective-C macro cfg warnings are nonfatal.
+- rebuild_check: native build, launch/screenshot and pointer gameplay PASS.
+  Mechanics comparisons remain unverified and are unrelated to this repair.
+
+Remaining acceptance checks:
+- HTTP GET /models/hand_landmarker.task returns 200 and the exact binary bytes,
+  not index.html. Shell loopback connections are blocked. web_site_open was
+  rejected by automatic approval policy: approval policy is never.
+- Start the app with the real webcam and confirm HandLandmarker initializes,
+  GPU or CPU delegate is active, and one/two physical hands produce 21 moving
+  landmarks each over successive frames. No fake video or inference was used.
+The successful pointer self-test is not evidence of real webcam initialization.
+Do not claim tracking is fully fixed until these remaining checks pass.
+
+Global tracking lifecycle repair (2026-11-16)
+- GlobalHandTrackingProvider now surrounds App/navigation and owns the persistent
+  inference video attachment and shutdown. Previews attach separate video views
+  of the same MediaStream, never move/remove the inference video or stop tracks.
+- App calibration, all five games, diagnostics, and one global fixed cursor use
+  the same service. Repeated start requests for the current session are ignored.
+- Pinch navigation uses viewport hit testing and one native click per release /
+  pinch transition. The latch survives hand loss and navigation. Disabled,
+  hidden, inert and disconnected controls are rejected. Mouse input is unchanged.
+- Inference skips hidden documents, resumes on visibility, and checks startup /
+  inference generations to avoid rescheduling obsolete loops after shutdown.
+- 18 automated tests pass, including camera/model/loop reuse over 20 simulated
+  subscriber changes, hidden/visible inference, pinch latching and Bubble Pop
+  landmark mapping. This is service-level automation, not physical navigation.
+- Production web and macOS desktop builds pass. rebuild_check passed build,
+  screenshot/launch and pointer gameplay checks; mechanics comparisons remain
+  unverified. No physical webcam/real-hand acceptance test was performed.
+Remaining acceptance: Camera Setup -> activate real hand -> Arcade -> pinch
+Bubble Pop -> start and pop bubbles -> back -> Records -> Settings -> Setup.
+Repeat navigation and check a single capture track/model/loop remains active;
+check hand loss/reacquisition, held pinch, resize, and hide/show recovery.
+
+Packaged MediaPipe runtime repair (2026-11-16)
+ROOT CAUSE AND OBSERVED EVIDENCE
+The previous resolver call passed new URL('wasm/', document.baseURI).href.
+MediaPipe 0.10.32 concatenates another '/' before the loader/binary filename.
+On macOS Tauri the resulting /wasm//vision_wasm_internal.js does not match
+/wasm/vision_wasm_internal.js in the embedded asset table. The SPA fallback
+returned index.html. The actual packaged WKWebView probe observed HTTP 200,
+text/html, 443 bytes for that malformed loader URL. A classic script that
+receives HTML cannot publish self.ModuleFactory, causing the reported error.
+This is a URL/asset-response failure, not evidence of a missing WASM binary or
+an unsupported worker: initialization runs in the main document and the official
+runtime uses classic script injection there. No worker/importScripts workaround
+or vendor loader patch is needed. The same probe also found the correct model
+bytes were served as text/html because .task is an unknown extension in Tauri.
+
+CHANGES
+- src/services/mediapipe.ts: canonical resolver base without trailing slash;
+  HTTP/content-type/signature diagnostics, local model/runtime checks, sequential
+  GPU -> CPU attempts followed by matching non-SIMD GPU -> CPU attempts;
+  serialized factory consumption across reconnects and cancellation checks.
+- src/services/vision.ts: connects those diagnostics/fallbacks to the existing
+  global service; captures script errors and CSP violations during startup.
+- src/App.tsx: expandable report in the existing Camera Setup error message;
+  packaged self-test now also verifies MediaPipe initialization/inference.
+- src/main.rs and tauri.conf.json: build the same configured window with a
+  resource response callback; the six known runtime assets get correct MIME
+  types and nosniff, while unknown runtime paths/HTML fallbacks get HTTP 404.
+  Existing restrictive CSP remains enabled, including wasm-unsafe-eval only.
+  Added explicit --runtime-test and --audit-runtime-assets diagnostic modes.
+- src/services/runtime-probe.ts and tests: packaged runtime probe plus regression
+  checks for malformed URLs, HTML fallback, MIME failures, and delegate/SIMD
+  fallback; existing tracking lifecycle/navigation tests remain intact.
+No provider restructuring, game rules, settings, records, calibration, cursor
+mapping, or pinch behavior was changed. No frames are sent over the network.
+
+VERIFICATION
+npm run build: PASS.
+CARGO_NET_OFFLINE=true npx tauri build --bundles app: PASS; existing objc cfg
+warnings only. The selected config is app/tauri.conf.json and native crate is
+app/Cargo.toml; the unused app/src-tauri scaffold is not the built application.
+npm test: 21 tests PASS, including cancellation and global service lifetime.
+Extracted assets from the actual HANDVERSE.app executable using
+  target/release/bundle/macos/HANDVERSE.app/Contents/MacOS/handverse \
+    --audit-runtime-assets /tmp/handverse-bundled-assets
+All six extracted runtime/model files were byte-identical to public/ files.
+setup:tracking --check confirms both official loader/binary pairs and vision
+bundle match installed @mediapipe/tasks-vision 0.10.32, and the model matches
+SHA256 fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1.
+The .app Info.plist contains the camera permission explanation and the intended
+studio.handverse.arcade identifier. Assets are embedded in the executable;
+they do not need to appear separately under Contents/Resources.
+
+Final rebuild_check: build PASS; actual app window draws at 2880x1880;
+pointer Pong/Bubble Pop and HUD PASS; packaged MediaPipe runtime step PASS.
+The machine-readable evidence is ../checks/round-0/self-test.json, runtime:
+- origin tauri://localhost (no development server)
+- malformed loader path: 404 text/plain
+- model: 200 application/octet-stream, 7,819,105 bytes
+- SIMD loader: 200 text/javascript, 204,816 bytes
+- SIMD binary: 200 application/wasm, 11,453,626 bytes
+- non-SIMD loader: 200 text/javascript, 204,669 bytes
+- non-SIMD binary: 200 application/wasm, 10,647,962 bytes
+- SIMD/GPU and non-SIMD/GPU initialization and blank-canvas inference: PASS
+- no JavaScript or CSP errors recorded for the corrected initialization
+CPU fallback is exercised with mocked GPU failures in regression tests; the
+successful packaged GPU run did not require CPU fallback. Blank canvas yielding
+zero hands is an inference/runtime check, not a physical hand detection claim.
+The direct native_window_capture tool was rejected by automatic approval review
+because tool execution required approval while policy was never. The separately
+requested rebuild_check successfully ran the packaged application/self-test.
+
+REMAINING MANUAL ACCEPTANCE (NOT VERIFIED)
+With network disabled and no Vite server, launch HANDVERSE.app, grant webcam
+permission and reconnect; confirm actual hands produce landmarks and cursor.
+Point and pinch Camera Setup -> Arcade -> Bubble Pop -> Records -> Settings ->
+Camera Setup, verifying one persistent cursor and one action per released pinch.
+Start Bubble Pop with a pinch and pop bubbles through real fingertip movement;
+check calibration remains saved, two hands, hand loss/reacquisition, hide/show,
+resize, camera stop/reconnect, and records/settings persistence after restart.
+Repeat offline after installation; no model/runtime download should occur.
+Camera permission and physical hand tests have not been performed here.
+Reference mechanics measurement comparisons remain unverified by rebuild_check;
+pointer core-loop self-tests do not replace real-hand or reference comparisons.
+To run only the camera-free packaged runtime probe manually:
+  target/release/bundle/macos/HANDVERSE.app/Contents/MacOS/handverse \
+    --runtime-test /tmp/handverse-runtime.json

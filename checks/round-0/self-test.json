@@ -1,0 +1,74 @@
+{
+  "runtime": {
+    "diagnostics": [
+      "Asset 200 text/javascript · 137160 bytes · tauri://localhost/vendor/vision_bundle.mjs",
+      "Asset 404 text/plain · 23 bytes · tauri://localhost/wasm//vision_wasm_internal.js",
+      "Asset failed · tauri://localhost/wasm//vision_wasm_internal.js · Error: HTTP 404",
+      "Model · tauri://localhost/models/hand_landmarker.task",
+      "Asset 200 application/octet-stream · 7819105 bytes · tauri://localhost/models/hand_landmarker.task",
+      "Runtime SIMD · loader tauri://localhost/wasm/vision_wasm_internal.js · binary tauri://localhost/wasm/vision_wasm_internal.wasm",
+      "Asset 200 text/javascript · 204816 bytes · tauri://localhost/wasm/vision_wasm_internal.js",
+      "Asset 200 application/wasm · 11453626 bytes · tauri://localhost/wasm/vision_wasm_internal.wasm",
+      "Initializing SIMD / GPU",
+      "Ready · SIMD / GPU",
+      "Model · tauri://localhost/models/hand_landmarker.task",
+      "Asset 200 application/octet-stream · 7819105 bytes · tauri://localhost/models/hand_landmarker.task",
+      "Runtime non-SIMD · loader tauri://localhost/wasm/vision_wasm_nosimd_internal.js · binary tauri://localhost/wasm/vision_wasm_nosimd_internal.wasm",
+      "Asset 200 text/javascript · 204669 bytes · tauri://localhost/wasm/vision_wasm_nosimd_internal.js",
+      "Asset 200 application/wasm · 10647962 bytes · tauri://localhost/wasm/vision_wasm_nosimd_internal.wasm",
+      "Initializing non-SIMD / GPU",
+      "Ready · non-SIMD / GPU"
+    ],
+    "malformedPathRejected": true,
+    "origin": "tauri://localhost",
+    "passed": true,
+    "realHandTested": false,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+    "variants": [
+      {
+        "delegate": "GPU",
+        "hands": 0,
+        "inference": true,
+        "initialized": true,
+        "requested": "auto",
+        "variant": "SIMD"
+      },
+      {
+        "delegate": "GPU",
+        "hands": 0,
+        "inference": true,
+        "initialized": true,
+        "requested": "non-SIMD",
+        "variant": "non-SIMD"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "detail": "Pointer moved the Pong paddle from 310.0 to 160.0",
+      "passed": true,
+      "step": "move"
+    },
+    {
+      "detail": "Popped 18 bubbles through pointer input; score 0 → 640",
+      "passed": true,
+      "step": "act"
+    },
+    {
+      "detail": "Visible score 0640, game score 640; timer and multiplier displayed",
+      "passed": true,
+      "step": "hud"
+    },
+    {
+      "detail": "{\"circleCollision\":true,\"swipeCollision\":true,\"paddleCollision\":true,\"comboScore\":true,\"coordinateMapping\":true,\"pinchTransitions\":true}",
+      "passed": true,
+      "step": "rules"
+    },
+    {
+      "detail": "Packaged MediaPipe initialized and inferred on a blank canvas with auto and non-SIMD runtimes; physical hands untested",
+      "passed": true,
+      "step": "mediapipe-runtime"
+    }
+  ],
+  "version": 1
+}

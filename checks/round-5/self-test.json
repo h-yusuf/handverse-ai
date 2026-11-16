@@ -1,0 +1,25 @@
+{
+  "steps": [
+    {
+      "detail": "Pointer moved the Pong paddle from 310.0 to 160.0",
+      "passed": true,
+      "step": "move"
+    },
+    {
+      "detail": "Popped 18 bubbles through pointer input; score 0 → 510",
+      "passed": true,
+      "step": "act"
+    },
+    {
+      "detail": "Visible score 0510, game score 510; timer and multiplier displayed",
+      "passed": true,
+      "step": "hud"
+    },
+    {
+      "detail": "{\"circleCollision\":true,\"swipeCollision\":true,\"paddleCollision\":true,\"comboScore\":true,\"coordinateMapping\":true,\"pinchTransitions\":true}",
+      "passed": true,
+      "step": "rules"
+    }
+  ],
+  "version": 1
+}

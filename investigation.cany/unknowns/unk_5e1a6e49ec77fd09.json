@@ -1,0 +1,13 @@
+{
+  "id": "unk_5e1a6e49ec77fd09",
+  "revision": 1,
+  "question": "Can dependencies and the MediaPipe model be installed? Host DNS is unavailable, offline npm cache lacks @mediapipe/tasks-vision, and Craft Anything build_command_run was rejected by automatic approval policy. The requested stack is retained; builds remain unverified until dependency installation is possible.",
+  "severity": "critical",
+  "domain": "general",
+  "status": "open",
+  "probes": [
+    "Run npm install with package registry access, download model and WASM assets, then npm run build and cargo build."
+  ],
+  "evidence_for": [],
+  "evidence_against": []
+}

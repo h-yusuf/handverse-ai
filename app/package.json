@@ -1,0 +1,31 @@
+{
+  "name": "handverse",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "tauri": "tauri",
+    "setup:tracking": "node scripts/setup-tracking.mjs",
+    "postinstall": "node scripts/setup-tracking.mjs",
+    "prebuild": "node scripts/setup-tracking.mjs --check",
+    "check:release": "node scripts/check-release.mjs",
+    "check:ci": "node scripts/check-ci.mjs"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "0.10.32",
+    "lucide-react": "https://registry.npmjs.org/lucide-react/-/lucide-react-0.577.0.tgz",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.4",
+    "@types/react": "https://registry.npmjs.org/@types/react/-/react-18.3.31.tgz",
+    "@types/react-dom": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.7.tgz",
+    "@vitejs/plugin-react": "4.7.0",
+    "typescript": "5.9.3",
+    "vite": "5.4.21",
+    "vitest": "2.1.9"
+  }
+}
