@@ -1,0 +1,23 @@
+import {describe,it,expect} from 'vitest';
+import {AirEngine,cameraPoint,world,zoomAt,serialize,restore,WIDTH,HEIGHT} from '../src/studio/engine';
+import {ownsUI} from '../src/services/hand-navigation';
+import type {Hand} from '../src/services/input';
+const hand=(pinching=false,x=.4,confidence=.99):Hand=>({id:'Right',points:Array.from({length:21},()=>({x,y:.5})),cursor:{x:1-x,y:.5},palm:{x:.5,y:.5},raw:{x,y:.5},gesture:pinching?'Pinch':'Pointing',pinching,pressed:false,speed:0,vx:0,vy:0,confidence});
+function update(e:AirEngine,h:Hand[],t:number){e.update(h,t,p=>cameraPoint(p),()=>true);}
+describe('Air Canvas gesture and document engine',()=>{
+ it('requires release before drawing, continues one stroke, ends on release',()=>{const e=new AirEngine();update(e,[hand(true)],100);expect(e.strokes).toHaveLength(0);update(e,[hand()],120);update(e,[hand(true)],150);update(e,[hand(true,.39)],180);expect(e.strokes).toHaveLength(1);expect(e.strokes[0].points).toHaveLength(2);update(e,[hand()],210);expect(e.active).toBeNull();});
+ it('breaks continuity on confidence loss and reacquisition',()=>{const e=new AirEngine();update(e,[hand()],100);update(e,[hand(true)],140);update(e,[hand(true,.4,.5)],180);update(e,[hand(true,.8)],220);expect(e.strokes).toHaveLength(1);expect(e.active).toBeNull();update(e,[hand(false,.8)],240);update(e,[hand(true,.8)],270);expect(e.strokes).toHaveLength(2);});
+ it('breaks on stale frames, large jumps, and leaving the region',()=>{const e=new AirEngine();update(e,[hand()],100);update(e,[hand(true)],140);update(e,[hand(true,.1)],170);expect(e.active).toBeNull();update(e,[hand()],190);update(e,[hand(true)],220);update(e,[hand(true)],500);expect(e.active).toBeNull();e.update([hand()],530,p=>cameraPoint(p),()=>false);expect(e.cursor).toBeNull();});
+ it('mirrors and crops camera coordinates consistently',()=>{expect(cameraPoint({x:0,y:0})).toEqual({x:WIDTH,y:0});expect(cameraPoint({x:1,y:1})).toEqual({x:0,y:HEIGHT});expect(cameraPoint({x:.5,y:.5},1920,1080)).toEqual({x:640,y:480});});
+ it('anchors zoom under the fingers and inversely maps panning',()=>{const v={x:50,y:20,zoom:1},p={x:400,y:300},w=world(p,v);zoomAt(v,p,2);expect(world(p,v)).toEqual(w);v.x+=30;expect(world(p,v).x).toBe(w.x-15);zoomAt(v,p,100);expect(v.zoom).toBe(4);});
+ it('two hand pinch owns input without making ink',()=>{const e=new AirEngine(),a=hand(true,.3),b={...hand(true,.7),id:'Left'};update(e,[a,b],100);update(e,[hand(true,.2),{...b,points:hand(true,.8).points}],150);expect(e.view.zoom).toBeCloseTo(1.5);expect(e.strokes).toHaveLength(0);update(e,[a],180);expect(e.active).toBeNull();});
+ it('undo/redo retains stroke parameters and branches correctly',()=>{const e=new AirEngine();e.begin({x:1,y:2},100);e.add({x:10,y:20},120);e.end();const s=e.strokes[0];e.undo();expect(e.strokes).toHaveLength(0);e.redo();expect(e.strokes[0]).toBe(s);e.undo();e.begin({x:20,y:30},200);expect(e.redoStack).toHaveLength(0);});
+ it('round trips structured strokes and view without resizing the document',()=>{const e=new AirEngine();e.begin({x:4,y:8},200);e.add({x:10,y:30},240);e.view={x:25,y:70,zoom:2};const other=new AirEngine();restore(serialize(e),other);expect(other.strokes).toEqual(e.strokes);expect(other.view).toEqual(e.view);expect(JSON.parse(serialize(e))).toMatchObject({width:1280,height:960});});
+ it('rejects invalid projects atomically',()=>{const e=new AirEngine();e.begin({x:4,y:8},200);const saved=serialize(e),p=JSON.parse(saved);p.strokes[0].points[0].x='bad';expect(()=>restore(JSON.stringify(p),e)).toThrow();expect(serialize(e)).toBe(saved);});
+ it('keeps navigation outside the canvas and suppresses inside',()=>{expect(ownsUI('canvas',true)).toBe(false);expect(ownsUI('canvas',false)).toBe(true);expect(ownsUI('global',true)).toBe(true);});
+ it('holds palm and peace gestures before activating, then pans after a stable hold',()=>{const e=new AirEngine();const posed=(count:number)=>{const h=hand();h.points=Array.from({length:21},()=>({x:.5,y:.6}));h.points[0]={x:.5,y:.9};[8,12,16,20].forEach((tip,i)=>{h.points[tip-2]={x:.5,y:.65};h.points[tip]={x:.5,y:i<count?.3:.7};});return h;};
+ const palm=posed(4);update(e,[palm],100);update(e,[palm],300);expect(e.radial).toBe(false);update(e,[palm],500);update(e,[palm],710);expect(e.radial).toBe(true);e.radial=false;
+ const peace=posed(2);for(const t of [2400,2600,2800,3010])update(e,[peace],t);expect(e.settings.eraser).toBe(true);
+ const pan=posed(3);for(const t of [3100,3300,3500,3710])update(e,[pan],t);const x=e.view.x;pan.points[8].x+=.02;update(e,[pan],3750);expect(e.view.x).not.toBe(x);expect(e.strokes).toHaveLength(0);
+ });
+});

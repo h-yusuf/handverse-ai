@@ -18,4 +18,4 @@ export function activate(target:HTMLElement){
  else target.click();
 }
 
-export function ownsUI(scope:'global'|'ar'|'ui',insideAR:boolean){return scope==='global'||!insideAR;}
+export function ownsUI(scope:'global'|'ar'|'ui'|'canvas',insideAR:boolean){return scope==='global'||!insideAR;}

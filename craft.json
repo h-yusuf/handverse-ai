@@ -7,9 +7,9 @@
   },
   "stack": "Rust + macroquad",
   "status": "ready",
-  "note": "Ready: 3 of 4 checks pass, 11 of 11 claims hold; 1 comparison remains unverified. 1 question about the original is still open.",
+  "note": "Ready: 3 of 4 checks pass, 15 of 15 claims hold; 1 comparison remains unverified. 1 question about the original is still open.",
   "created_ms": 1794801730588,
-  "updated_ms": 1794838190017,
+  "updated_ms": 1794839715686,
   "checks": [
     {
       "round": 1,
@@ -993,14 +993,119 @@
       "unknowns": [
         "Mechanics behavior has not been measured against app/mechanics.json."
       ]
+    },
+    {
+      "round": 16,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1794839677330
+    },
+    {
+      "round": 16,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2880×1880).",
+      "artifacts": [
+        "checks/round-0/screenshot.png"
+      ],
+      "at_ms": 1794839683761
+    },
+    {
+      "round": 16,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (Pointer moved the Pong paddle from 310.0 to 160.0), act (Popped 18 bubbles through pointer input; score 0 → 490), hud (Visible score 0490, game score 490; timer and multiplier displayed).",
+      "artifacts": [
+        "checks/round-0/self-test.json"
+      ],
+      "at_ms": 1794839697212,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-draw\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-history\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-png\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-fullscreen\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"rules\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-webgl\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-input-isolation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-modes\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-gesture-studio\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-immersive\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-navigation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"mediapipe-runtime\"",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 16,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.",
+      "artifacts": [],
+      "at_ms": 1794839697391,
+      "unknowns": [
+        "Mechanics behavior has not been measured against app/mechanics.json."
+      ]
     }
   ],
-  "agent_session": "01a1e4ac-0534-7fc0-b32d-edfdb74951e9",
+  "agent_session": "01a1e4c1-efd3-7eb3-8e97-5cc3a2122a25",
   "agent_session_by": "codex",
   "agent_session_deep": false,
   "capture_deep": false,
   "allowed_actions": [],
-  "last_reply": "I’ll inspect the existing Hand Pong and shared hand tracking, implement the upgrade in `app/`, then run focused tests, the production build, and `rebuild_check`. I’ll use the frontend design skill to keep the new controls consistent with HANDVERSE.\n\nThe current Pong uses variable frame timing and an AI paddle that follows the ball. I’ll replace those parts with a 120 Hz simulation and constrained AI, while reusing the global tracker’s already-mirrored palm coordinates and hand-update subscription.\n\nPong now has adaptive palm smoothing, swept collisions, three AI difficulties, and the match controls and effects. The first test run found two assertion issues—an incorrect reflection-test distance and floating-point rounding at a movement limit—which I’m correcting before running the full checks.\n\nAll 63 tests pass, including 14 new Pong tests for collisions, timing, AI, scoring, and tracking loss. The production build and Tauri Rust check also pass; `rebuild_check` is running now. Physical webcam testing and Windows execution still need manual validation.\n\n`rebuild_check` passed the build, native app launch, and gameplay smoke checks, including moving the new Pong paddle. Packaged MediaPipe inference also passed; comparison against the reference mechanics remains unverified. I’m recording those results and the remaining manual checks in the project notes.\n\nImplemented Hand Pong v2 with smooth hand control, fixed-step physics, three AI difficulties, and complete solo match controls. All 63 tests, production build, Tauri check, and rebuild_check passed. Webcam testing, Windows execution, and reference-mechanics comparisons remain unverified.",
+  "last_reply": "I’ll inspect the existing navigation and hand tracking, then add Air Canvas using the shared camera feed. I’ll preserve the current experiences, run the frontend build, and check the result with `rebuild_check`.\nThe app already exposes hand landmarks and a shared camera video, so Air Canvas can use both without another tracking loop. I’m following the frontend design skill to match HANDVERSE’s existing styling and adding canvas input ownership so drawing gestures won’t trigger navigation.\nAir Canvas now has structured strokes, five brushes, light painting, gesture controls, project saving, PNG export, and timelapse replay and recording. I’m testing tracking recovery, coordinate mapping, history, and file restoration next, then checking the frontend and desktop builds; physical webcam testing remains unverified.\nThe production build, all 73 automated tests, and the macOS Tauri compatibility check passed. I also added desktop smoke checks for drawing pixels, undo/redo, PNG dimensions, and preserving a drawing through fullscreen transitions; `rebuild_check` is running those now.\nAdded Creative Studio → Air Canvas with gesture drawing, five brushes, light painting, undo/redo, save/load, exports, and fullscreen, using the shared tracker while preserving existing games and AR. All 74 tests, production build, macOS compatibility check, and rebuild_check runtime checks passed. Physical webcam testing, Windows execution, video output, and reference mechanics comparisons remain unverified.",
   "asset_budget_usd": 5.0,
   "generate_assets": false,
   "questions": "decide"

@@ -8,19 +8,20 @@ export function TrackingLayer(){
  useEffect(()=>{
   let raf=0,hover:HTMLElement|null=null,since=0,dwelled=false,primary:string|undefined;
   let feedback:{x:number;y:number;at:number}|null=null;
+  const insideOwnedRegion=(x:number,y:number)=>{const el=document.elementFromPoint(x,y);return !!el?.closest('[data-ar-region],[data-air-region]')&&!el.closest('[data-air-tools]');};
   const gate=new PinchGate(),history:{x:number;y:number}[]=[];
   const clearHover=()=>{hover?.classList.remove('hand-hover');hover=null;since=0;dwelled=false;};
   const choose=(x:number,y:number)=>{const target=interactiveAt(x,y);if(target){feedback={x,y,at:performance.now()};activate(target);dwelled=true;}};
   const unsubscribe=vision.subscribeHands(hands=>{
    primary=hands.find(h=>h.id===primary)?.id??hands[0]?.id;
-   for(const hand of hands){const pressed=gate.update(hand);if(pressed&&hand.id===primary&&!document.hidden&&ownsUI(vision.interactionScope,!!document.elementFromPoint(hand.cursor.x*innerWidth,hand.cursor.y*innerHeight)?.closest('[data-ar-region]')))choose(Math.min(innerWidth-1,hand.cursor.x*innerWidth),Math.min(innerHeight-1,hand.cursor.y*innerHeight));}
+   for(const hand of hands){const pressed=gate.update(hand);if(pressed&&hand.id===primary&&!document.hidden&&!(vision.interactionScope==='canvas'&&vision.ownsCanvasInput?.(hand))&&ownsUI(vision.interactionScope,insideOwnedRegion(hand.cursor.x*innerWidth,hand.cursor.y*innerHeight)))choose(Math.min(innerWidth-1,hand.cursor.x*innerWidth),Math.min(innerHeight-1,hand.cursor.y*innerHeight));}
   });
   const frame=(now:number)=>{
    const el=canvas.current!,c=el.getContext('2d')!;
    if(el.width!==innerWidth||el.height!==innerHeight){el.width=innerWidth;el.height=innerHeight;history.length=0;}
    c.clearRect(0,0,el.width,el.height);
    const cursorHand=vision.data.hands.find(h=>h.id===primary);
-   if(cursorHand&&!ownsUI(vision.interactionScope,!!document.elementFromPoint(cursorHand.cursor.x*innerWidth,cursorHand.cursor.y*innerHeight)?.closest('[data-ar-region]'))){history.length=0;feedback=null;clearHover();raf=requestAnimationFrame(frame);return;}
+   if(cursorHand&&((vision.interactionScope==='canvas'&&vision.ownsCanvasInput?.(cursorHand))||!ownsUI(vision.interactionScope,insideOwnedRegion(cursorHand.cursor.x*innerWidth,cursorHand.cursor.y*innerHeight)))){history.length=0;feedback=null;clearHover();raf=requestAnimationFrame(frame);return;}
    const hand=!document.hidden&&vision.data.hands.find(h=>h.id===primary);
    if(hand){
     const x=Math.min(innerWidth-1,hand.cursor.x*innerWidth),y=Math.min(innerHeight-1,hand.cursor.y*innerHeight),color=hand.id==='Left'?'#ba9aff':'#65edff';

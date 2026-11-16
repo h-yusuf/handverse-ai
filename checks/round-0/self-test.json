@@ -50,14 +50,34 @@
       "step": "move"
     },
     {
-      "detail": "Popped 18 bubbles through pointer input; score 0 → 650",
+      "detail": "Popped 18 bubbles through pointer input; score 0 → 490",
       "passed": true,
       "step": "act"
     },
     {
-      "detail": "Visible score 0650, game score 650; timer and multiplier displayed",
+      "detail": "Visible score 0490, game score 490; timer and multiplier displayed",
       "passed": true,
       "step": "hud"
+    },
+    {
+      "detail": "Pointer stroke rendered 933 ink pixels",
+      "passed": true,
+      "step": "air-draw"
+    },
+    {
+      "detail": "Undo clears ink, redo restores matching ink",
+      "passed": true,
+      "step": "air-history"
+    },
+    {
+      "detail": "Actual PNG IHDR is 1280 × 960; transparent canvas background",
+      "passed": true,
+      "step": "air-png"
+    },
+    {
+      "detail": "Immersive enter/exit preserves structured drawing",
+      "passed": true,
+      "step": "air-fullscreen"
     },
     {
       "detail": "{\"circleCollision\":true,\"swipeCollision\":true,\"paddleCollision\":true,\"comboScore\":true,\"coordinateMapping\":true,\"pinchTransitions\":true}",
