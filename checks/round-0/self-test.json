@@ -50,12 +50,12 @@
       "step": "move"
     },
     {
-      "detail": "Popped 18 bubbles through pointer input; score 0 → 640",
+      "detail": "Popped 18 bubbles through pointer input; score 0 → 680",
       "passed": true,
       "step": "act"
     },
     {
-      "detail": "Visible score 0640, game score 640; timer and multiplier displayed",
+      "detail": "Visible score 0680, game score 680; timer and multiplier displayed",
       "passed": true,
       "step": "hud"
     },

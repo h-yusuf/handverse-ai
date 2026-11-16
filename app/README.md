@@ -2,7 +2,7 @@
 
 A desktop hand-controlled arcade built with React, Rust and Tauri 2. MediaPipe detects hands locally; the app-wide cursor, pinch-to-click, gesture controls and mini-games share the existing tracking pipeline.
 
-Repository: [h-yusuf/handverse-ai](https://github.com/h-yusuf/handverse-ai). This folder is the intended repository root.
+Repository: [h-yusuf/handverse-ai](https://github.com/h-yusuf/handverse-ai). The repository root contains this `app/` folder and `.github/workflows/release.yml`.
 
 Screenshots: arcade overview — placeholder; camera setup — placeholder; gesture gameplay — placeholder. Add reviewed screenshots without exposing personal camera imagery.
 
@@ -10,9 +10,9 @@ Features include real-time hand tracking, app-wide navigation, five mini-games, 
 
 ## Install
 
-Open [GitHub Releases](https://github.com/h-yusuf/handverse-ai/releases), choose a version and expand **Assets**. On Apple Silicon download the `aarch64.dmg`; on Intel Mac choose `x64.dmg`. Open the disk image and drag HANDVERSE to Applications. On Windows x64 download the NSIS `setup.exe`, or use the alternative MSI. Install one Windows format only. Source-code ZIP files are not installers.
+Open [GitHub Releases](https://github.com/h-yusuf/handverse-ai/releases), choose a version and expand **Assets**. On Apple Silicon download the `aarch64.dmg`. Open the disk image and drag HANDVERSE to Applications. On Windows x64 download the NSIS `setup.exe`, or use the alternative MSI. Install one Windows format only. Source-code ZIP files are not installers.
 
-Requirements: macOS 12+ (Apple Silicon preferred; Intel runtime testing pending), or Windows 10/11 x64 with WebView2, a webcam for hand controls, and a GPU/CPU capable of running MediaPipe WASM. Windows installers include the WebView2 offline installer. No development server, Node.js or Rust is needed after installation. Model/runtime assets are embedded for offline use. Camera performance depends on hardware and lighting.
+Requirements: macOS 12+ on Apple Silicon, or Windows 10/11 x64 with WebView2, a webcam for hand controls, and a GPU/CPU capable of running MediaPipe WASM. Windows installers include the WebView2 offline installer. No development server, Node.js or Rust is needed after installation. Model/runtime assets are embedded for offline use. Camera performance depends on hardware and lighting.
 
 Unsigned test builds can trigger Gatekeeper or SmartScreen warnings and may be blocked by policy. Signing and macOS notarization are recommended for public distribution. Follow OS security guidance; do not disable protections or remove quarantine attributes. Signing does not guarantee immediate SmartScreen reputation.
 
@@ -20,7 +20,7 @@ Unsigned test builds can trigger Gatekeeper or SmartScreen warnings and may be b
 
 Use Node.js 22, npm, stable Rust and the platform prerequisites in [Tauri's documentation](https://v2.tauri.app/start/prerequisites/): Xcode Command Line Tools on macOS; Visual Studio C++ Build Tools and Windows SDK on Windows. GitHub-hosted runners already include these tools. No Linux installers are configured.
 
-This is a nonstandard layout: **Cargo.toml, tauri.conf.json and build.rs are at the repository root**; Rust lives in `src/main.rs`, alongside the frontend. Always run commands here. The unused `src-tauri/` starter template is excluded from publication and must not replace the working root crate. The existing macOS output is `target/release/bundle/macos/HANDVERSE.app`.
+This is a nonstandard layout: **Cargo.toml, tauri.conf.json and build.rs are in `app/`**; Rust lives in `src/main.rs`, alongside the frontend. Run the following commands from `app/`. The unused `src-tauri/` starter template is excluded from publication and must not replace the working root crate. The existing macOS output is `target/release/bundle/macos/HANDVERSE.app`.
 
 ```sh
 npm ci

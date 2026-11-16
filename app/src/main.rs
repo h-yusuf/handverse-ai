@@ -99,7 +99,9 @@ fn main() {
             screenshot = Some(std::path::PathBuf::from(args.next().expect("--screenshot requires a PNG path")));
         }
     }
-    let context = tauri::generate_context!();
+    // Pin the runtime explicitly on every platform; macOS-only command arguments
+    // must not be needed to infer the runtime in Windows builds.
+    let context: tauri::Context<tauri::Wry> = tauri::generate_context!();
     // Read the actual release binary's embedded asset table without opening a GUI.
     if let Some(folder) = audit_assets {
         for path in ["vendor/vision_bundle.mjs", "wasm/vision_wasm_internal.js", "wasm/vision_wasm_internal.wasm", "wasm/vision_wasm_nosimd_internal.js", "wasm/vision_wasm_nosimd_internal.wasm", "models/hand_landmarker.task"] {

@@ -1,0 +1,36 @@
+# Dependencies and build output (source and pinned runtime assets stay tracked).
+node_modules/
+target/
+dist/
+gen/
+*.tsbuildinfo
+
+# Local caches, logs, generated Craft Anything state and captures.
+.npm-cache/
+.taste-skill/
+*.log
+.DS_Store
+Thumbs.db
+/build-activity.log
+/craft.json
+/feed.json
+/usage.json
+/checks/
+/inbox/
+/investigation.cany/
+/capture/
+/reference/
+
+# Local credentials and editor state.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.codex/
+.agents/
+.idea/
+.vscode/

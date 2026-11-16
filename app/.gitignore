@@ -28,3 +28,6 @@ Thumbs.db
 .vscode/
 *.download
 # Keep Cargo.lock, package-lock.json and public/{models,wasm,vendor} in Git.
+
+# Generated only by the release prepare job.
+release-notes.md

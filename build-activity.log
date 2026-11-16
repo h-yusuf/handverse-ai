@@ -673,3 +673,55 @@
 06:48:25 done  Check mechanics: app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.
 06:48:25 stage Ready: 3 of 4 checks pass, 5 of 5 claims hold; 1 comparison remains unverified. 2 questions about the original are still open.
 06:48:25 stage Ready: 3 of 4 checks pass, 5 of 5 claims hold; 1 comparison remains unverified. 2 questions about the original are still open.
+--- Craft Anything 0.6.1: a run started 2026-11-16 06:52:18 UTC ---
+06:52:18 stage Getting the builder ready…
+06:52:22 stage Improving the build…
+06:52:22 note  Asking Codex…
+06:52:29 said  I’ll inspect the repository and Tauri setup, prepare the release workflow and bundled assets, then run the relevant build checks and `rebuild_check`.
+06:52:32 note  Running: /bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g 'package.json' -g 'Cargo.toml' -g 'tauri.conf*' -g '.gitignore' -g '*release*' -g '*mediapipe*' -g '*landmarker*' -g 'pnpm-lock.yaml' -g 'package-lock
+06:52:35 start core session show
+06:52:35 start core investigation show
+06:52:35 done  core session show: {"content":[{"text":"{\"result\":{\"active_target\":null,\"analysis_mode\":\"clean-room\",\"clean_room\":true,\"evidence_not_loaded\":0,\"evidence_records\":0,\"host\":\"macos-aarch64\",\"open\":false
+06:52:35 done  core investigation show: {"content":[{"text":"{\"result\":{\"brief\":null,\"findings\":[],\"handoff\":\"User asked Indonesian 'apakah sudah di push?' Confirmed neither workspace nor app/ has .git; git -C app status reports no
+06:52:35 note  Running: /bin/zsh -lc 'git rev-parse --show-toplevel && git status --short && git remote -v && ls -la && ls -la app && find .. -name AGENTS.md -print'
+06:52:42 note  Running: /bin/zsh -lc 'git ls-files && cat app/.github/workflows/release.yml app/package.json app/Cargo.toml app/build.rs app/tauri.conf.json app/tauri.macos.conf.json app/tauri.windows.conf.json app/.gitignor
+06:52:47 note  Running: /bin/zsh -lc "cat app/scripts/check-ci.mjs app/scripts/check-bundles.mjs app/scripts/setup-tracking.mjs app/scripts/configure-macos-signing.mjs && rg -n 'Assets|custom-protocol|on_web_resource_request
+06:52:55 said  The Git root is the workspace, with the app inside `app/`; the existing workflow sits under `app/.github/`, where GitHub won’t run it. I’ll move it to the root, correct its paths, and untrack generated files while keeping local copies.
+06:52:57 note  Running: /bin/zsh -lc "rg -n 'fn on_web_resource_request|pub fn get\\(|fn get\\(&self|pub fn assets' /Users/apittmy/.cargo/registry/src/*/tauri-2*/src/{lib.rs,webview/webview_window.rs} /Users/apittmy/.cargo/r
+06:53:06 note  Running: /bin/zsh -lc "sed -n '220,265p' /Users/apittmy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.12.5/src/webview/webview_window.rs && rg -n 'pub struct Context|pub fn generate_context|pub
+06:53:40 note  Running: /bin/zsh -lc "cat .github/workflows/release.yml && rg -n 'workflow|Intel|repository root|no .git|git clone|check:ci|macos-15-intel' app/README.md app/docs app/scripts && sed -n '95,155p' app/node_modu
+06:53:45 said  The workflow now targets macOS ARM64 and Windows x64 and checks that the compiled binaries contain all six MediaPipe runtime/model files. This environment blocks changes to Git’s index, so I couldn’t untrack the generated files; I’ll include the exact cleanup command, which preserves local copies, in the publishing instructions.
+06:54:07 note  Running: /bin/zsh -lc "python3 - <<'PY' from pathlib import Path p=Path('app/docs/RELEASING.md') s=p.read_text() start=s.index('## 1.') end=s.index('## 2.') s=s[:start]+'''## 1. Publish the prepared workflow i
+06:54:07 note  Running: /bin/zsh -lc 'npm run check:ci -- aarch64-apple-darwin'
+06:54:18 note  Running: /bin/zsh -lc 'npm run tauri build -- --locked --bundles app'
+06:54:23 note  Running: /bin/zsh -lc "python3 - <<'PY' from pathlib import Path p=Path('.github/workflows/release.yml');s=p.read_text().replace('args: --locked --target', 'args: --target').replace('--config ci-signing.json -
+06:54:23 note  Running: /bin/zsh -lc 'npm run tauri build -- --bundles app -- --locked'
+06:54:34 note  Running: /bin/zsh -lc "ps -axo pid,etime,command | rg 'cargo|rustc|tauri build'"
+06:54:56 note  Running: /bin/zsh -lc 'git diff --stat && git status --short --untracked-files=normal && npm --prefix app run tauri -- build --help'
+06:55:05 said  The frontend build, asset checks, and 21 unit tests passed. The native rebuild is still running; it caught a Tauri argument-placement error that I’ve corrected in the workflow. Windows compilation and testing remain unverified on this macOS host.
+06:55:07 note  Running: /bin/zsh -lc "python3 - <<'PY' from pathlib import Path p=Path('.github/workflows/release.yml');p.write_text(p.read_text().replace('args: --target', 'args: --ci --target')) PY"
+06:55:21 start rebuild check
+06:55:22 stage The builder is checking its work…
+06:55:25 stage Checking its work (1 of 4): build…
+06:55:33 stage Checking its work (2 of 4): app-screenshot…
+06:55:39 stage Checking its work (3 of 4): game-self-test…
+06:55:50 stage Checking its work (4 of 4): mechanics…
+06:55:50 stage The builder checked its work: 3 of 4 checks pass, 5 of 5 claims hold; 1 comparison remains unverified.
+06:55:52 done  rebuild check (30 s): {"content":[{"text":"{\"result\":{\"project\":\"/Users/apittmy/Documents/Craft Anything/project-handverse-ai\",\"report\":\"build: passed — Build succeeded.\\napp-screenshot: passed — The program star
+06:56:10 note  Running: /bin/zsh -lc "node --input-type=module - <<'JS' import {spawnSync} from 'node:child_process'; import {readFileSync,mkdtempSync} from 'node:fs'; import {join} from 'node:path'; import {tmpdir} from 'no
+06:56:12 note  Running: /bin/zsh -lc "ruby -ryaml -e 'w = YAML.load_file(\".github/workflows/release.yml\"); abort \"triggers\" unless (w[\"on\"] || w[true]).keys.sort == [\"push\", \"workflow_dispatch\"].sort; %w[prepare bu
+06:56:16 said  The macOS ARM64 app rebuilt successfully, and all six embedded tracking assets match the source files. The requested `rebuild_check` also passed its build check; I ran it once and won’t repeat its bundled gameplay checks. I’m recording the results and exact publishing commands now.
+06:56:33 note  Running: /bin/zsh -lc "python3 - <<'PY' from pathlib import Path Path('app/docs/VALIDATION.md').write_text('''# Release workflow validation — 2026-11-16 The actual Git root is "'`/Users/apittmy/Documents/Craf
+06:56:38 said  Prepared the root release workflow for macOS ARM64 and Windows x64, with bundled MediaPipe assets and improved ignore rules. macOS build and rebuild_check passed; Windows remains unverified. Exact changes and publishing commands are in [RELEASING.md](app/docs/RELEASING.md), including cache untracking commands because Git index writes were blocked here.
+06:56:42 note  The builder's turn ended (834299 tokens in, 6851 out)
+06:56:42 stage Checking the build…
+06:56:42 stage Checking the build (1 of 4): build…
+06:56:44 stage Checking the build (2 of 4): app-screenshot…
+06:56:50 stage Checking the build (3 of 4): game-self-test…
+06:57:00 stage Checking the build (4 of 4): mechanics…
+06:57:00 done  Check build: Build succeeded.
+06:57:00 done  Check app-screenshot: The program starts and draws (2880×1880).
+06:57:00 done  Check game-self-test: The self-test plays the core loop: move (Pointer moved the Pong paddle from 310.0 to 160.0), act (Popped 18 bubbles through pointer input; score 0 → 560), hud (Visible score 0560, game score 560; timer and multiplier displayed).
+06:57:00 done  Check mechanics: app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.
+06:57:00 stage Ready: 3 of 4 checks pass, 5 of 5 claims hold; 1 comparison remains unverified. 2 questions about the original are still open.
+06:57:00 stage Ready: 3 of 4 checks pass, 5 of 5 claims hold; 1 comparison remains unverified. 2 questions about the original are still open.

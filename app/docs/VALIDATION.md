@@ -1,32 +1,24 @@
-# Validation — 2026-11-16
+# Release workflow validation — 2026-11-16
 
-Available host: macOS ARM64; existing dependencies were already present. No physical-camera test was performed for this change.
+The actual Git root is `/Users/apittmy/Documents/Craft Anything/project-handverse-ai`; origin is `https://github.com/h-yusuf/handverse-ai.git`. Application source remains in `app/`. The workflow is now at `.github/workflows/release.yml`, with app-relative run commands, npm cache paths, Tauri project path and artifact paths. It targets only macOS ARM64 and Windows x64.
 
-Push status rechecked on 2026-11-16: neither the workspace nor `app/` contains a `.git` directory, and `git -C app status --short --branch` reports “not a git repository”. No push was performed from this workspace. This local check cannot establish whether someone else has updated the GitHub repository; use the existing-repository procedure in [RELEASING.md](RELEASING.md) to publish the prepared app.
-
-Push-status follow-up validation: `npm run tauri build -- --bundles app` exited 0 and rebuilt the macOS application (21.51 MiB), with the same nine nonfatal Objective-C macro warnings. `rebuild_check` passed the build, 2880×1880 launch/screenshot, Pong pointer movement, bubble popping and score display checks. Reference mechanics comparisons and physical-camera/two-hand tracking remain unverified.
-
-Continuation rebuild: `npm run check:ci` passed again (production frontend, tracking assets, version checks, all 21 tests and Rust checks). `npm run tauri build -- --bundles app` also completed successfully and regenerated `target/release/bundle/macos/HANDVERSE.app`. No source fixes were required. Rust emitted nine existing `cargo-clippy` configuration warnings from Objective-C macros; there were no build errors. This rerun did not repeat DMG packaging, runtime camera tests or GitHub publishing.
-
-| Check | Actual result |
+| Relevant check | Actual result |
 | --- | --- |
-| npm ci lockfile compatibility | Offline dry run with scripts disabled passed; a fresh network install was not performed |
-| Version and asset checks | Passed; 1.0.0 matches package/lockfile/Cargo/Tauri, six MediaPipe assets verified |
-| Production frontend | TypeScript and Vite passed |
-| Existing tests | 21/21 passed |
-| Rust | cargo check --locked passed on macOS ARM64 using the offline cache |
-| Native release app | Built HANDVERSE.app successfully |
-| Native DMG packaging | Attempted and failed: hdiutil create failed — Device not configured; disk-image creation is unavailable in this environment |
-| Embedded assets | All six files extracted from the final release binary byte-match public originals |
-| rebuild_check | Build, 2880×1880 launch/screenshot and pointer gameplay checks passed |
-| Packaged MediaPipe | Actual WKWebView SIMD/GPU and non-SIMD/GPU initialization and blank-canvas inference passed; malformed loader rejected with 404 |
-| Mechanics comparison | Reference behavior measurements remain unverified |
-| Windows / Intel macOS | Compilation, installers, WebView2, camera, real hands and gameplay runtime tests not run locally; CI is configured but has not run |
-| Physical camera / gesture acceptance | Permissions, hand detection, app-wide hand cursor, pinch-to-click, all games with real hands and offline post-install tests remain pending on each OS |
-| Signing/notarization | Not run; no production signing credentials supplied |
-| GitHub publish | Not performed; supplied app has no Git history, GitHub DNS fails, gh auth status reports saved authentication invalid (network unavailable). No remote workflow run or status can be retrieved |
-| Workflow static checks | YAML parses, scripts parse, matching release tag validates; this is not a successful GitHub Actions run |
+| Workflow YAML | Ruby YAML parse passed; tag/manual triggers, app working directories and both target triples checked |
+| Script/config syntax | Release, CI, asset-setup and bundle-audit scripts pass `node --check`; all three Tauri JSON configurations parse |
+| `npm run check:ci -- aarch64-apple-darwin` (in app/) | Passed: version alignment, pinned MediaPipe/model assets, TypeScript/Vite production build, 21 existing unit tests, and `cargo check --locked --target aarch64-apple-darwin` |
+| `npm run tauri build -- --bundles app -- --locked` (in app/) | Passed; generated `target/release/bundle/macos/HANDVERSE.app`, 21.40 MiB, with ad-hoc signature |
+| Embedded assets | All six runtime/model files extracted from the newly built release executable and byte-compared successfully against public originals; no GUI launched for this audit |
+| `rebuild_check` | Called once as requested; build passed. Tool also runs built-in launch/screenshot and pointer self-test checks, which passed. No follow-up gameplay verification loop was run |
+| Windows x64 | Not compiled or tested on this macOS host. Native Windows CI builds/checks and NSIS/MSI packaging are configured; no successful remote run is claimed |
+| DMG and Windows installer packaging | Not run locally for this change; required on the two native GitHub runners |
+| Real-camera/gesture operation and reference mechanics | Not tested for this release-configuration task; remain unverified |
+| Production signing/notarization | Not run; optional credentials supported, default macOS signature is ad-hoc |
+| Git index cleanup | Attempted `git rm --cached`, blocked by environment denial creating `.git/index.lock`; nothing deleted locally. Exact untracking commands are in RELEASING.md |
+| Publishing | No commit, push, version tag, release or repository created |
 
-The release workflow uses macos-15 ARM64, macos-15-intel x64 and windows-latest x64. Runner labels were checked against [GitHub's runner documentation](https://docs.github.com/en/actions/reference/runners/github-hosted-runners); macOS 14 images are retired. Each macOS binary is audited on its native runner architecture. Installer failures remain fatal. GitHub Actions will retain check logs and installers and publish only after every matrix job passes.
+Rust emitted nine existing nonfatal `cargo-clippy` configuration warnings from the macOS Objective-C macros. No build errors remain. An initial invocation put `--locked` among Tauri options; the corrected workflow forwards it to Cargo after `--`, as verified by the successful rebuild.
 
-No commit/push was made because upstream history cannot be fetched and usable authentication is not available. No repository, remote commit or tag was created. Follow RELEASING.md to apply the prepared files to the exact existing repository without force-pushing. Application license selection and the model/transitive redistribution review remain owner decisions; no project license file was added.
+The Rust context is explicitly typed as `tauri::Context<tauri::Wry>` so its runtime inference does not depend on macOS-only command signatures. Objective-C code and dependencies remain guarded for macOS; this source review does not establish Windows compilation success.
+
+See [RELEASING.md](RELEASING.md) for the exact changed files, commands to untrack generated artifacts without removing local copies, and commands to commit, push and tag the existing repository. The workflow creates a draft on a matching version tag and publishes it only after both native builds and installer/embedded-asset checks succeed. A branch workflow dispatch builds artifacts without publishing.

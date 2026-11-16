@@ -9,7 +9,7 @@
   "status": "ready",
   "note": "Ready: 3 of 4 checks pass, 5 of 5 claims hold; 1 comparison remains unverified. 2 questions about the original are still open.",
   "created_ms": 1794801730588,
-  "updated_ms": 1794811705242,
+  "updated_ms": 1794812220507,
   "checks": [
     {
       "round": 1,
@@ -580,14 +580,80 @@
       "unknowns": [
         "Mechanics behavior has not been measured against app/mechanics.json."
       ]
+    },
+    {
+      "round": 11,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1794812204094
+    },
+    {
+      "round": 11,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2880×1880).",
+      "artifacts": [
+        "checks/round-11/screenshot.png"
+      ],
+      "at_ms": 1794812210082
+    },
+    {
+      "round": 11,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (Pointer moved the Pong paddle from 310.0 to 160.0), act (Popped 18 bubbles through pointer input; score 0 → 560), hud (Visible score 0560, game score 560; timer and multiplier displayed).",
+      "artifacts": [
+        "checks/round-11/self-test.json"
+      ],
+      "at_ms": 1794812220340,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"rules\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"mediapipe-runtime\"",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.",
+      "artifacts": [],
+      "at_ms": 1794812220363,
+      "unknowns": [
+        "Mechanics behavior has not been measured against app/mechanics.json."
+      ]
     }
   ],
-  "agent_session": "01a1e31a-41e4-7031-b90d-2e84478c87f4",
+  "agent_session": "01a1e320-d700-7b93-a066-852bd1868874",
   "agent_session_by": "codex",
   "agent_session_deep": false,
   "capture_deep": false,
   "allowed_actions": [],
-  "last_reply": "Saya akan cek status perubahan dan push terakhir, lalu memastikan aplikasi berhasil dibangun ulang.\nBelum ada push dari workspace ini; folder proyek tidak memiliki riwayat Git (.git). Saya akan mencatat status tersebut di dokumentasi dan menjalankan build serta rebuild_check.\nBelum di-push dari workspace ini karena folder proyek belum terhubung ke Git. Statusnya sudah saya catat; build ulang dan pemeriksaan rebuild_check berhasil. Pengujian kamera nyata dan perbandingan perilaku game dengan referensi masih belum terverifikasi.",
+  "last_reply": "I’ll inspect the repository and Tauri setup, prepare the release workflow and bundled assets, then run the relevant build checks and `rebuild_check`.\nThe Git root is the workspace, with the app inside `app/`; the existing workflow sits under `app/.github/`, where GitHub won’t run it. I’ll move it to the root, correct its paths, and untrack generated files while keeping local copies.\nThe workflow now targets macOS ARM64 and Windows x64 and checks that the compiled binaries contain all six MediaPipe runtime/model files. This environment blocks changes to Git’s index, so I couldn’t untrack the generated files; I’ll include the exact cleanup command, which preserves local copies, in the publishing instructions.\nThe frontend build, asset checks, and 21 unit tests passed. The native rebuild is still running; it caught a Tauri argument-placement error that I’ve corrected in the workflow. Windows compilation and testing remain unverified on this macOS host.\nThe macOS ARM64 app rebuilt successfully, and all six embedded tracking assets match the source files. The requested `rebuild_check` also passed its build check; I ran it once and won’t repeat its bundled gameplay checks. I’m recording the results and exact publishing commands now.\nPrepared the root release workflow for macOS ARM64 and Windows x64, with bundled MediaPipe assets and improved ignore rules. macOS build and rebuild_check passed; Windows remains unverified. Exact changes and publishing commands are in [RELEASING.md](app/docs/RELEASING.md), including cache untracking commands because Git index writes were blocked here.",
   "asset_budget_usd": 5.0,
-  "generate_assets": false
+  "generate_assets": false,
+  "questions": "decide"
 }
