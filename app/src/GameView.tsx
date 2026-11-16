@@ -6,7 +6,12 @@ import {useHandTracking} from './HandTrackingProvider';
 import {settings,record,records} from './services/storage';
 import {sound} from './services/audio';
 import {observeGame} from './selftest';
-export function GameView({id,practice,onBack}:{id:GameId;practice:boolean;onBack:()=>void}){
+import {PongView} from './games/pong/PongView';
+export function GameView(props:{id:GameId;practice:boolean;onBack:()=>void}){
+ if(props.id==='pong')return <PongView practice={props.practice} onBack={props.onBack}/>;
+ return <ClassicGameView {...props}/>;
+}
+function ClassicGameView({id,practice,onBack}:{id:GameId;practice:boolean;onBack:()=>void}){
  const vision=useHandTracking();
  const canvas=useRef<HTMLCanvasElement>(null),engine=useRef(new Engine(id)),pointer=useRef({x:W/2,y:H/2,active:false,inside:false}),trail=useRef<{x:number;y:number;life:number}[]>([]);
  const [hud,setHud]=useState({score:0,time:60,lives:3,combo:0,over:false,started:false,paused:false,gesture:'—'}),[muted,setMuted]=useState(!settings.sound),[missing,setMissing]=useState(false);

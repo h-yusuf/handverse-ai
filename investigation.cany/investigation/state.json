@@ -1,5 +1,5 @@
 {
-  "revision": 19,
+  "revision": 20,
   "brief": null,
   "plan": [
     {
@@ -20,6 +20,6 @@
   ],
   "hypotheses": [],
   "findings": [],
-  "handoff": "Completed HANDVERSE Gesture Reactive Playground V2 in app/. Created reusable ar/gestures.ts with palm-normalized six poses, pinch priority/hysteresis, hold/cooldown, transitions, motion states and two-hand transform; ar/hud.ts with white 1.5px/4px HUD and six landmark-driven effects; ar/GestureStudio.tsx saved mappings/colors/recognition/quality preferences; services/hand-landmarks.ts shared connections; tests/gesture-engine.test.ts. Extended existing ARInteraction/ARRenderer/ARPlayground, retained code/lab/visualizer and shared provider, five games and Tauri configs. AR workspace input isolation allows navigation and Studio UI outside workspace, latch remains updated across regions. GPU buffer reuse, pooled particle seeds, measured diagnostics, no extra inference loop. 49 tests pass. Production build, check:ci (incl cargo check), final macOS Tauri bundle build pass with nine existing Objective-C warnings. Final rebuild_check passes build, native launch screenshot, pointer gameplay/HUD, all six AR smoke steps including Studio, and packaged SIMD/non-SIMD inference. Inspected arcade screenshot. docs/AR-PLAYGROUND.md has full definitions, thresholds, files/results. Physical webcam, Windows-native execution/build and reference-mechanics behavior comparisons remain unverified. No physical camera claim. Pre-existing dirty/untracked work was preserved.",
-  "updated": "2026-11-16T12:54:20Z"
+  "handoff": "Implemented Hand Pong v2 Phase 1 in app/ only: new src/games/pong/simulation.ts, PongView.tsx and pong.css; routed Pong in GameView while preserving other games, global tracking/cursor, AR and platform integration. Fixed 120 Hz accumulator/interpolated rendering, swept wall/paddle/goal physics, speed cap/contact offset bounces, one goal per crossing, first to seven; One Euro palm smoothing on shared inference subscription measured intervals, held stale input with bounded recovery; constrained Easy/Normal/Hard prediction AI; Solo mode menu with disabled upcoming multiplayer, countdown, pause/restart/gameover, keyboard/pointer fallback, sound, pooled trails/particles and score tint. Updated Pong metadata and removed obsolete two-hand settings toggle. Updated selftest selector. Added tests/pong.test.ts (14 focused tests), docs/HAND-PONG-V2.md including file list and details. npm run check:ci passed all 63 tests, production TS/Vite build, asset/version checks and macOS cargo check (9 existing ObjC warnings). rebuild_check passed build/native launch/screenshot, Pong pointer movement 310→160, gameplay HUD/AR smoke and packaged SIMD/non-SIMD inference. Inspected generated launch screenshot. Reference mechanics behavior remains unverified per checker; no physical webcam, sustained target-hardware FPS or Windows-native execution verified. No networking/multiplayer or other roadmap work implemented. Existing unrelated dirty workspace files preserved. No more mechanics/screenshot rounds needed.",
+  "updated": "2026-11-16T14:09:24Z"
 }

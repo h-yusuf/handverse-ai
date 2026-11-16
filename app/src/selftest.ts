@@ -12,7 +12,7 @@ export async function runGameplaySelfTest(){
   click('.game-pong');await delay(150);
   const practice=Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Try pointer practice'));
   if(!practice)throw new Error('Pointer practice control missing');practice.click();await delay(150);
-  click('.start-overlay button');await delay(150);
+  click('.start-overlay .pong-start');await delay(150);
   const before=currentGame!().paddle;move(300,160);await delay(200);
   const after=currentGame!().paddle;
   steps.push({step:'move',passed:Math.abs(after-before)>50,detail:`Pointer moved the Pong paddle from ${before.toFixed(1)} to ${after.toFixed(1)}`});

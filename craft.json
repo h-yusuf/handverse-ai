@@ -9,7 +9,7 @@
   "status": "ready",
   "note": "Ready: 3 of 4 checks pass, 11 of 11 claims hold; 1 comparison remains unverified. 1 question about the original is still open.",
   "created_ms": 1794801730588,
-  "updated_ms": 1794833700847,
+  "updated_ms": 1794838190017,
   "checks": [
     {
       "round": 1,
@@ -904,14 +904,103 @@
       "unknowns": [
         "Mechanics behavior has not been measured against app/mechanics.json."
       ]
+    },
+    {
+      "round": 15,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1794838171199
+    },
+    {
+      "round": 15,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2880×1880).",
+      "artifacts": [
+        "checks/round-15/screenshot.png"
+      ],
+      "at_ms": 1794838176816
+    },
+    {
+      "round": 15,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (Pointer moved the Pong paddle from 310.0 to 160.0), act (Popped 18 bubbles through pointer input; score 0 → 700), hud (Visible score 0700, game score 700; timer and multiplier displayed).",
+      "artifacts": [
+        "checks/round-15/self-test.json"
+      ],
+      "at_ms": 1794838189869,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"rules\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-webgl\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-input-isolation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-modes\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-gesture-studio\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-immersive\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-navigation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"mediapipe-runtime\"",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 15,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.",
+      "artifacts": [],
+      "at_ms": 1794838189897,
+      "unknowns": [
+        "Mechanics behavior has not been measured against app/mechanics.json."
+      ]
     }
   ],
-  "agent_session": "01a1e464-36cf-7a93-bdbb-fa5d2af1adbe",
+  "agent_session": "01a1e4ac-0534-7fc0-b32d-edfdb74951e9",
   "agent_session_by": "codex",
   "agent_session_deep": false,
   "capture_deep": false,
   "allowed_actions": [],
-  "last_reply": "I’ll inspect the existing tracking and AR Playground code, then add the gesture engine, reactive effects, and settings while preserving the games and desktop setup. I’ll run focused tests, build the app, and check it with `rebuild_check`.\n\nThe existing playground already reuses the camera and WebGL renderer and supports movable panels, so I’ll extend that foundation. I’m using the frontend design skill to keep the new controls consistent with the app; the requested white HUD and subtle glass effects will guide the AR visuals.\n\nThe new pose engine now classifies landmarks using palm-relative distances, with hold times, pinch hysteresis, cooldowns, tracking-loss recovery, and explicit transitions. Next I’ll connect those states to the effects, add saved Gesture Studio controls, and refine input ownership so AR pinches cannot click menus.\n\nAll six effects are connected to tracked landmarks, and two-hand pinching now controls the wireframe object’s scale and rotation. The 49 automated tests and production web build pass; I’m checking the desktop rebuild next, followed by `rebuild_check`. Physical webcam behavior still needs hands-on verification.\n\nThe web and Rust compatibility checks pass. I also updated the packaged-app smoke test to check Gesture Studio and input ownership, and made collapse animate toward the fist without changing saved panel positions. The final desktop bundle is rebuilding; physical webcam testing and a Windows-native build remain unverified.\n\nThe final macOS app bundle built successfully, and all 49 tests pass, including synthetic checks for each effect. `rebuild_check` is now running the packaged-app checks; I’ve also documented the changed files, gesture thresholds, and testing limitations in the app’s AR documentation.\n\nUpgraded AR Playground with six gesture-driven effects, a white hand HUD, Gesture Studio, and two-hand hologram controls while preserving existing games and navigation. All 49 tests, web/macOS builds, and rebuild_check runtime checks passed. Physical webcam testing, Windows validation, and reference-mechanics comparisons remain unverified.",
+  "last_reply": "I’ll inspect the existing Hand Pong and shared hand tracking, implement the upgrade in `app/`, then run focused tests, the production build, and `rebuild_check`. I’ll use the frontend design skill to keep the new controls consistent with HANDVERSE.\n\nThe current Pong uses variable frame timing and an AI paddle that follows the ball. I’ll replace those parts with a 120 Hz simulation and constrained AI, while reusing the global tracker’s already-mirrored palm coordinates and hand-update subscription.\n\nPong now has adaptive palm smoothing, swept collisions, three AI difficulties, and the match controls and effects. The first test run found two assertion issues—an incorrect reflection-test distance and floating-point rounding at a movement limit—which I’m correcting before running the full checks.\n\nAll 63 tests pass, including 14 new Pong tests for collisions, timing, AI, scoring, and tracking loss. The production build and Tauri Rust check also pass; `rebuild_check` is running now. Physical webcam testing and Windows execution still need manual validation.\n\n`rebuild_check` passed the build, native app launch, and gameplay smoke checks, including moving the new Pong paddle. Packaged MediaPipe inference also passed; comparison against the reference mechanics remains unverified. I’m recording those results and the remaining manual checks in the project notes.\n\nImplemented Hand Pong v2 with smooth hand control, fixed-step physics, three AI difficulties, and complete solo match controls. All 63 tests, production build, Tauri check, and rebuild_check passed. Webcam testing, Windows execution, and reference-mechanics comparisons remain unverified.",
   "asset_budget_usd": 5.0,
   "generate_assets": false,
   "questions": "decide"
