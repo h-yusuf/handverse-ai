@@ -1,8 +1,8 @@
 import {useEffect,useRef} from 'react';
 import {useHandTracking} from './HandTrackingProvider';
 import {settings} from './services/storage';
-import {PinchGate,interactiveAt,activate} from './services/hand-navigation';
-export const connections=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]];
+import {PinchGate,interactiveAt,activate,ownsUI} from './services/hand-navigation';
+export {connections} from './services/hand-landmarks';
 export function TrackingLayer(){
  const vision=useHandTracking(),canvas=useRef<HTMLCanvasElement>(null);
  useEffect(()=>{
@@ -13,12 +13,14 @@ export function TrackingLayer(){
   const choose=(x:number,y:number)=>{const target=interactiveAt(x,y);if(target){feedback={x,y,at:performance.now()};activate(target);dwelled=true;}};
   const unsubscribe=vision.subscribeHands(hands=>{
    primary=hands.find(h=>h.id===primary)?.id??hands[0]?.id;
-   for(const hand of hands){const pressed=gate.update(hand);if(pressed&&hand.id===primary&&!document.hidden)choose(Math.min(innerWidth-1,hand.cursor.x*innerWidth),Math.min(innerHeight-1,hand.cursor.y*innerHeight));}
+   for(const hand of hands){const pressed=gate.update(hand);if(pressed&&hand.id===primary&&!document.hidden&&ownsUI(vision.interactionScope,!!document.elementFromPoint(hand.cursor.x*innerWidth,hand.cursor.y*innerHeight)?.closest('[data-ar-region]')))choose(Math.min(innerWidth-1,hand.cursor.x*innerWidth),Math.min(innerHeight-1,hand.cursor.y*innerHeight));}
   });
   const frame=(now:number)=>{
    const el=canvas.current!,c=el.getContext('2d')!;
    if(el.width!==innerWidth||el.height!==innerHeight){el.width=innerWidth;el.height=innerHeight;history.length=0;}
    c.clearRect(0,0,el.width,el.height);
+   const cursorHand=vision.data.hands.find(h=>h.id===primary);
+   if(cursorHand&&!ownsUI(vision.interactionScope,!!document.elementFromPoint(cursorHand.cursor.x*innerWidth,cursorHand.cursor.y*innerHeight)?.closest('[data-ar-region]'))){history.length=0;feedback=null;clearHover();raf=requestAnimationFrame(frame);return;}
    const hand=!document.hidden&&vision.data.hands.find(h=>h.id===primary);
    if(hand){
     const x=Math.min(innerWidth-1,hand.cursor.x*innerWidth),y=Math.min(innerHeight-1,hand.cursor.y*innerHeight),color=hand.id==='Left'?'#ba9aff':'#65edff';

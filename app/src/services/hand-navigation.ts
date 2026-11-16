@@ -17,3 +17,5 @@ export function activate(target:HTMLElement){
  if(target instanceof HTMLSelectElement){try{target.showPicker();}catch{target.click();}}
  else target.click();
 }
+
+export function ownsUI(scope:'global'|'ar'|'ui',insideAR:boolean){return scope==='global'||!insideAR;}

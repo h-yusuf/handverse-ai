@@ -1,3 +1,4 @@
+import {runARSmokeTest} from '../ar/smoke-test';
 import {runGameplaySelfTest} from '../selftest';
 import {loadMediaPipe,initializeLandmarker,inspectRuntimeAsset,runtimeURL,errorText} from './mediapipe';
 // Run with HANDVERSE.app/Contents/MacOS/handverse --runtime-test /tmp/report.json.
@@ -31,6 +32,7 @@ export async function runRuntimeProbe(){
 
 export async function runPackagedSelfTest(){
  const runtime=await runRuntimeProbe();
+ const ar=await runARSmokeTest();
  const gameplay=await runGameplaySelfTest();
- return {...gameplay,runtime,steps:[...gameplay.steps,{step:'mediapipe-runtime',passed:runtime.passed===true,detail:runtime.passed?'Packaged MediaPipe initialized and inferred on a blank canvas with auto and non-SIMD runtimes; physical hands untested':JSON.stringify(runtime)}]};
+ return {...gameplay,runtime,steps:[...gameplay.steps,...ar,{step:'mediapipe-runtime',passed:runtime.passed===true,detail:runtime.passed?'Packaged MediaPipe initialized and inferred on a blank canvas with auto and non-SIMD runtimes; physical hands untested':JSON.stringify(runtime)}]};
 }
