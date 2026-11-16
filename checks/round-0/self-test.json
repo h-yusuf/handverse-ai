@@ -50,12 +50,12 @@
       "step": "move"
     },
     {
-      "detail": "Popped 18 bubbles through pointer input; score 0 → 680",
+      "detail": "Popped 16 bubbles through pointer input; score 0 → 470",
       "passed": true,
       "step": "act"
     },
     {
-      "detail": "Visible score 0680, game score 680; timer and multiplier displayed",
+      "detail": "Visible score 0470, game score 470; timer and multiplier displayed",
       "passed": true,
       "step": "hud"
     },
@@ -63,6 +63,36 @@
       "detail": "{\"circleCollision\":true,\"swipeCollision\":true,\"paddleCollision\":true,\"comboScore\":true,\"coordinateMapping\":true,\"pinchTransitions\":true}",
       "passed": true,
       "step": "rules"
+    },
+    {
+      "detail": "{\"context\":true,\"program\":true,\"linked\":true,\"error\":0,\"version\":\"WebGL 1.0\",\"physicalCameraTested\":false}",
+      "passed": true,
+      "step": "ar-webgl"
+    },
+    {
+      "detail": "AR owns hand input while the shared camera service remains unchanged",
+      "passed": true,
+      "step": "ar-input-isolation"
+    },
+    {
+      "detail": "Code, lab and visualizer controls switch modes; diagnostics render and mode persists locally",
+      "passed": true,
+      "step": "ar-modes"
+    },
+    {
+      "detail": "Studio settings and live preview mount; UI ownership restores on returning to Playground",
+      "passed": true,
+      "step": "ar-gesture-studio"
+    },
+    {
+      "detail": "Immersive workspace opens and exits",
+      "passed": true,
+      "step": "ar-immersive"
+    },
+    {
+      "detail": "Leaving AR unmounts its renderer and restores global hand navigation",
+      "passed": true,
+      "step": "ar-navigation"
     },
     {
       "detail": "Packaged MediaPipe initialized and inferred on a blank canvas with auto and non-SIMD runtimes; physical hands untested",

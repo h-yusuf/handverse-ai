@@ -1,13 +1,14 @@
 {
   "id": "unk_5e1a6e49ec77fd09",
-  "revision": 1,
+  "revision": 2,
   "question": "Can dependencies and the MediaPipe model be installed? Host DNS is unavailable, offline npm cache lacks @mediapipe/tasks-vision, and Craft Anything build_command_run was rejected by automatic approval policy. The requested stack is retained; builds remain unverified until dependency installation is possible.",
   "severity": "critical",
   "domain": "general",
-  "status": "open",
+  "status": "resolved",
   "probes": [
     "Run npm install with package registry access, download model and WASM assets, then npm run build and cargo build."
   ],
   "evidence_for": [],
-  "evidence_against": []
+  "evidence_against": [],
+  "resolution": "The earlier dependency blocker is obsolete. npm prebuild verified pinned MediaPipe 0.10.32, both WASM variants and the official model; the macOS Tauri bundle built successfully on 2026-11-16. checks/round-0/self-test.json records HTTP 200 for packaged model/runtime assets and successful SIMD/non-SIMD initialization and inference. Physical hands were not tested."
 }

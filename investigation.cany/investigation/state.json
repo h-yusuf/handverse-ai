@@ -1,30 +1,25 @@
 {
-  "revision": 12,
+  "revision": 19,
   "brief": null,
   "plan": [
     {
-      "title": "Design the arcade and game rules",
-      "status": "doing"
+      "title": "Restore the previous hand-overlay style and thin the main camera lines",
+      "status": "done",
+      "why": "Cyan/purple lines restored, main camera stroke 1.5 instead of 2.5; tracking logic preserved."
     },
     {
-      "title": "Connect the camera and hand controls",
-      "status": "todo"
+      "title": "Rebuild the desktop app and run automated checks",
+      "status": "done",
+      "why": "macOS bundle built; 29 tests passed; rebuild_check passed build, screenshot, gameplay, AR and runtime smoke checks. Reference mechanics comparison remains incomplete."
     },
     {
-      "title": "Build all five playable games",
-      "status": "todo"
-    },
-    {
-      "title": "Add calibration, records and settings",
-      "status": "todo"
-    },
-    {
-      "title": "Build, play-test and check the result",
-      "status": "todo"
+      "title": "Record results and remaining physical-camera validation",
+      "status": "done",
+      "why": "Dependency blocker resolved. Real-camera appearance/two-hand testing remains unverified. Browser inspector blocked by loopback EPERM."
     }
   ],
   "hypotheses": [],
   "findings": [],
-  "handoff": "User asked Indonesian 'apakah sudah di push?' Confirmed neither workspace nor app/ has .git; git -C app status reports not a git repository. No push performed; remote state not verified. Updated app/docs/VALIDATION.md with push status and fresh results. npm run tauri build -- --bundles app exited 0, rebuilt 21.51 MiB HANDVERSE.app with nine existing nonfatal objc macro warnings. rebuild_check passed build, launch/screenshot 2880x1880 and pointer gameplay/HUD; reference mechanics comparisons and physical-camera/two-hand tests remain unverified. Existing publication instructions app/docs/RELEASING.md preserve upstream history. No source changes needed for status question.",
-  "updated": "2026-11-16T06:46:45Z"
+  "handoff": "Completed HANDVERSE Gesture Reactive Playground V2 in app/. Created reusable ar/gestures.ts with palm-normalized six poses, pinch priority/hysteresis, hold/cooldown, transitions, motion states and two-hand transform; ar/hud.ts with white 1.5px/4px HUD and six landmark-driven effects; ar/GestureStudio.tsx saved mappings/colors/recognition/quality preferences; services/hand-landmarks.ts shared connections; tests/gesture-engine.test.ts. Extended existing ARInteraction/ARRenderer/ARPlayground, retained code/lab/visualizer and shared provider, five games and Tauri configs. AR workspace input isolation allows navigation and Studio UI outside workspace, latch remains updated across regions. GPU buffer reuse, pooled particle seeds, measured diagnostics, no extra inference loop. 49 tests pass. Production build, check:ci (incl cargo check), final macOS Tauri bundle build pass with nine existing Objective-C warnings. Final rebuild_check passes build, native launch screenshot, pointer gameplay/HUD, all six AR smoke steps including Studio, and packaged SIMD/non-SIMD inference. Inspected arcade screenshot. docs/AR-PLAYGROUND.md has full definitions, thresholds, files/results. Physical webcam, Windows-native execution/build and reference-mechanics behavior comparisons remain unverified. No physical camera claim. Pre-existing dirty/untracked work was preserved.",
+  "updated": "2026-11-16T12:54:20Z"
 }
