@@ -61,6 +61,9 @@ fn finish_screenshot(
     use objc::{class, msg_send, sel, sel_impl};
     use objc::runtime::Object;
     let path = options.screenshot.clone().ok_or("No screenshot requested")?;
+    if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
+        std::fs::create_dir_all(parent).map_err(|error| error.to_string())?;
+    }
     window.with_webview(move |webview| unsafe {
         let callback = block2::RcBlock::new(move |image: *mut std::ffi::c_void, error: *mut std::ffi::c_void| {
             let image = image as *mut Object;
@@ -87,7 +90,12 @@ fn finish_screenshot(
             }
         });
         let view = webview.inner() as *mut Object;
-        let _: () = msg_send![view, takeSnapshotWithConfiguration: std::ptr::null_mut::<Object>() completionHandler: (&*callback as *const _ as *const std::ffi::c_void)];
+        // The 120 application frames are already drawn. Waiting for a future
+        // screen update can hang indefinitely when another app covers this one.
+        let config: *mut Object = msg_send![class!(WKSnapshotConfiguration), new];
+        let _: () = msg_send![config, setAfterScreenUpdates: false];
+        let _: () = msg_send![view, takeSnapshotWithConfiguration: config completionHandler: (&*callback as *const _ as *const std::ffi::c_void)];
+        let _: () = msg_send![config, release];
     }).map_err(|error| error.to_string())
 }
 
@@ -125,12 +133,66 @@ fn main() {
         println!("Embedded runtime assets extracted; malformed double-slash loader exists: {malformed}");
         return;
     }
-    let builder = tauri::Builder::default()
-        .setup(|app| {
+    let screenshot_mode = screenshot.is_some();
+    let automation_mode = screenshot_mode || self_test.is_some();
+    let builder = tauri::Builder::default();
+    // Tauri forwards this to Tao before the event loop starts.
+    #[cfg(target_os = "macos")]
+    let builder = builder.activate_ignoring_other_apps(!screenshot_mode);
+    let builder = builder
+        .setup(move |app| {
             // Use the existing window config while correcting custom-protocol runtime
             // responses. Unknown .task extensions otherwise default to text/html.
-            tauri::WebviewWindowBuilder::from_config(app, &app.config().app.windows[0])?
-                .on_web_resource_request(|request, response| {
+            let window = tauri::WebviewWindowBuilder::from_config(app, &app.config().app.windows[0])?
+                .focused(!screenshot_mode);
+            let window = if automation_mode {
+                window.background_throttling(tauri::utils::config::BackgroundThrottlingPolicy::Disabled)
+                    // Native ticks keep render callbacks progressing even when
+                    // WebKit clamps background JavaScript timers to one per second.
+                    .initialization_script(r#"
+                        window.__HANDVERSE_AUTOMATION__ = true;
+                        let nextFrame = 0;
+                        const frames = new Map();
+                        let nextTimer = 0;
+                        const timers = new Map();
+                        const schedule = (callback, delay, repeat, args) => {
+                            const id = ++nextTimer;
+                            const duration = Math.max(0, Number(delay) || 0);
+                            timers.set(id, {callback, args, due: performance.now() + duration, duration, repeat});
+                            return id;
+                        };
+                        window.setTimeout = (callback, delay, ...args) => schedule(callback, delay, false, args);
+                        window.setInterval = (callback, delay, ...args) => schedule(callback, delay, true, args);
+                        window.clearTimeout = window.clearInterval = id => timers.delete(id);
+                        window.requestAnimationFrame = callback => {
+                            const id = ++nextFrame;
+                            frames.set(id, callback);
+                            return id;
+                        };
+                        window.cancelAnimationFrame = id => frames.delete(id);
+                        window.__handverseDrawFrame = () => {
+                            const batch = Array.from(frames.entries());
+                            const now = performance.now();
+                            for (const [id, timer] of Array.from(timers.entries())) {
+                                if (timers.has(id) && now >= timer.due) {
+                                    if (timer.repeat) timer.due = now + timer.duration;
+                                    else timers.delete(id);
+                                    try { timer.callback(...timer.args); } catch (error) { console.error(error); }
+                                }
+                            }
+                            for (const [id, callback] of batch) {
+                                if (frames.delete(id)) callback(now);
+                            }
+                        };
+                    "#)
+            } else { window };
+            // Covered WKWebView/GTK windows can stop painting. Only lower on Windows.
+            #[cfg(target_os = "windows")]
+            let window = if screenshot_mode {
+                window.always_on_bottom(true)
+                    .additional_browser_args("--disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows")
+            } else { window };
+            let window = window.on_web_resource_request(|request, response| {
                     let path = request.uri().path();
                     if !(path.starts_with("/vendor/") || path.starts_with("/wasm/") || path.starts_with("/models/")) { return; }
                     let mime = match path {
@@ -151,6 +213,14 @@ fn main() {
                     response.headers_mut().insert("X-Content-Type-Options", "nosniff".parse().unwrap());
                 })
                 .build()?;
+            if automation_mode {
+                std::thread::spawn(move || {
+                    for _ in 0..3600 {
+                        if window.eval("window.__handverseDrawFrame?.()").is_err() { break; }
+                        std::thread::sleep(std::time::Duration::from_millis(16));
+                    }
+                });
+            }
             Ok(())
         })
         .manage(Automation { screenshot, self_test, runtime_test });

@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {Camera,ScanLine,Maximize2,Minimize2,RotateCcw,Hand,Activity,Box,Code2,Power,ArrowRight} from 'lucide-react';
 import {useHandTracking,useTrackingSnapshot} from './HandTrackingProvider';
 import {load,save} from './services/storage';
+import {isAutomatedRun} from './services/native';
 import {ARInteraction,arDefaults,sanitizeSettings,type ARSettings,type ARMode} from './ar/interaction';
 import {ARRenderer} from './ar/renderer';
 import {HandHUD} from './ar/hud';
@@ -37,7 +38,7 @@ export function ARPlayground(){
   const lost=(event:Event)=>{event.preventDefault();setRendererError('The graphics context was interrupted. Reload the renderer to continue.');cancelAnimationFrame(raf);};
   canvas.current!.addEventListener('webglcontextlost',lost);
   const tick=(now:number)=>{
-   raf=requestAnimationFrame(tick);if(document.hidden){last=now;return;}
+   raf=requestAnimationFrame(tick);if(document.hidden&&!isAutomatedRun()){last=now;return;}
    const config=live.current,low=config.quality==='low'||(config.quality==='auto'&&qualityLow);
    if(low&&now-lastDraw<32)return;
    const dt=Math.min(100,now-last);last=now;lastDraw=now;engine.current.animate(now,dt,width,height);

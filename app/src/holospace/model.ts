@@ -2,7 +2,7 @@ export const apps=['YouTube','Music','Maps','Notes','Timer','Calculator'] as con
 export type AppName=typeof apps[number];
 export type SpatialWindow={id:AppName;x:number;y:number;w:number;h:number;z:number;minimized:boolean;text:string};
 export type Layout={version:1;windows:SpatialWindow[];dim:number};
-export const emptyLayout=():Layout=>({version:1,windows:[],dim:.55});
+export const emptyLayout=():Layout=>({version:1,windows:[],dim:.28});
 export function bounds(win:SpatialWindow,width:number,height:number):SpatialWindow{
  const maxW=Math.max(1,width),maxH=Math.max(1,height-144);
  const w=Math.min(maxW,Math.max(Math.min(260,maxW),win.w*width));
@@ -18,7 +18,7 @@ export function focus(layout:Layout,id:AppName):Layout{
 export function open(layout:Layout,id:AppName,width:number,height:number):Layout{
  if(layout.windows.some(w=>w.id===id))return focus(layout,id);
  const n=layout.windows.length;
- return focus({...layout,windows:[...layout.windows,bounds({id,x:.12+n*.035,y:.18+n*.025,w:380/width,h:300/height,z:n+1,minimized:false,text:''},width,height)]},id);
+ return focus({...layout,windows:[...layout.windows,bounds({id,x:.12+n*.035,y:.18+n*.025,w:(id==='YouTube'?680:id==='Music'?500:380)/width,h:(id==='YouTube'?640:id==='Music'?670:340)/height,z:n+1,minimized:false,text:''},width,height)]},id);
 }
 export function close(layout:Layout,id:AppName):Layout{return {...layout,windows:layout.windows.filter(w=>w.id!==id)};}
 export function minimize(layout:Layout,id:AppName):Layout{return {...layout,windows:layout.windows.map(w=>w.id===id?{...w,minimized:true}:w)};}

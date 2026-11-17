@@ -33,6 +33,10 @@ npm run tauri build -- --bundles nsis,msi        # Windows x64
 
 CI uses explicit Rust targets; its output is under `target/<target>/release/bundle/`. For Intel from Apple Silicon: `rustup target add x86_64-apple-darwin`, then `npm run tauri build -- --target x86_64-apple-darwin --bundles dmg`. The native Objective-C helper follows the Cargo target architecture. Cocoa, Vision, screenshot code and dependencies remain macOS-only; Windows hand tracking uses local MediaPipe with GPU/CPU and non-SIMD fallbacks. Windows uses a secure local WebView2 origin with the same narrow CSP and no remote runtime host.
 
+## Screenshot check
+
+On macOS, run `./target/release/handverse --screenshot shots/now.png` after a Tauri release build. The app opens without activating, draws about 120 frames, writes the rendered webview as a PNG (creating parent folders), and exits. Screenshot runs use a native frame clock to keep drawing in the background and do not lower the macOS window. Without the option, startup uses normal window activation. Windows screenshot-mode window settings disable focus, lower the window and disable Chromium background throttling; native image capture remains macOS-only.
+
 ## Publish to the existing GitHub repository
 
 See [RELEASING.md](docs/RELEASING.md) for exact push/tag instructions, optional signing secrets, workflow behavior and download steps. Do not create a different repository or force-push. All application versions start at `1.0.0` and must match the tag `v1.0.0`; CI rejects mismatches. [Release note template](docs/RELEASE-NOTES.md) supplies features, platforms, instructions, limitations and privacy information.

@@ -17,13 +17,13 @@
         "minWidth": 960,
         "minHeight": 680,
         "backgroundColor": "#090b13",
-        "focus": false,
+        "focus": true,
         "create": false,
         "useHttpsScheme": true
       }
     ],
     "security": {
-      "csp": "default-src 'self' asset:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: data: blob:; media-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; worker-src 'self' blob:"
+      "csp": "default-src 'self' asset:; script-src 'self' 'wasm-unsafe-eval' https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline'; img-src 'self' asset: data: blob: https://i.ytimg.com; media-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; frame-src https://www.youtube-nocookie.com https://www.youtube.com; worker-src 'self' blob:"
     }
   },
   "bundle": {

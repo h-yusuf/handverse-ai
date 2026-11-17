@@ -2,6 +2,7 @@ import {useEffect,useRef,useState,type PointerEvent} from 'react';
 import {Camera,Maximize2,Minimize2,Undo2,Redo2,Eraser,Trash2,Download,Save,FolderOpen,HelpCircle,Play,Video,Palette} from 'lucide-react';
 import {useHandTracking,useTrackingSnapshot} from '../HandTrackingProvider';
 import {connections} from '../services/hand-landmarks';
+import {isAutomatedRun} from '../services/native';
 import {AirEngine,brushes,WIDTH,HEIGHT,cameraPoint,world,serialize,restore,type BrushSettings} from './engine';
 import {drawInk,drawCamera,supportedVideo} from './render';
 import './studio.css';
@@ -25,7 +26,7 @@ export function AirCanvas(){
    if(engine.settings.eraser!==lastEraser){lastEraser=engine.settings.eraser;setConfig({...engine.settings});}
   });
   const frame=(now:number)=>{
-   raf=requestAnimationFrame(frame);if(document.hidden){engine.lost();return;}if(now-lastSeen>220&&pointer.current===null)engine.lost();
+   raf=requestAnimationFrame(frame);if(document.hidden&&!isAutomatedRun()){engine.lost();return;}if(now-lastSeen>220&&pointer.current===null)engine.lost();
    const p=playback.current;if(p&&now-p.start>p.last-p.first+400){finishPlayback();}
    drawCamera(camera.current!.getContext('2d')!,vision.video);
    if(engine.revision!==lastRevision||playback.current||engine.strokes.some(s=>s.light&&!s.persistent)){
