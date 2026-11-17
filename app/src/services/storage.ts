@@ -1,3 +1,4 @@
+import {validateHandControls} from './precision-hand';
 import {identity,type Calibration} from './input';
 export type Settings={sound:boolean;overlay:boolean;dwell:boolean;twoPlayer:boolean;particles:boolean;calibration:Calibration};
 export type RecordEntry={game:string;score:number;date:string};
@@ -7,3 +8,5 @@ export function save(key:string,value:unknown){try{localStorage.setItem('handver
 export const settings:Settings={...defaults,...load('settings',defaults)};
 export const records=()=>load<RecordEntry[]>('records',[]);
 export function record(game:string,score:number){save('records',[{game,score,date:new Date().toISOString()},...records()].slice(0,100));}
+
+export const handControls=validateHandControls(load('handControls.v1',null));

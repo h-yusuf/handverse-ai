@@ -50,12 +50,12 @@
       "step": "move"
     },
     {
-      "detail": "Popped 19 bubbles through pointer input; score 0 → 630",
+      "detail": "Popped 18 bubbles through pointer input; score 0 → 640",
       "passed": true,
       "step": "act"
     },
     {
-      "detail": "Visible score 0630, game score 630; timer and multiplier displayed",
+      "detail": "Visible score 0640, game score 640; timer and multiplier displayed",
       "passed": true,
       "step": "hud"
     },
@@ -78,6 +78,46 @@
       "detail": "Immersive enter/exit preserves structured drawing",
       "passed": true,
       "step": "air-fullscreen"
+    },
+    {
+      "detail": "Synthetic landmark pinch opens the dock launcher once and keeps it open through held frames",
+      "passed": true,
+      "step": "holo-pinch"
+    },
+    {
+      "detail": "Synthetic pinch selects Notes from the launcher",
+      "passed": true,
+      "step": "holo-launcher"
+    },
+    {
+      "detail": "Synthetic held pinch moves Notes by 89.6, 54.6 CSS px",
+      "passed": true,
+      "step": "holo-drag"
+    },
+    {
+      "detail": "Synthetic held pinch resizes Notes by 69.5, 39.9 CSS px",
+      "passed": true,
+      "step": "holo-resize"
+    },
+    {
+      "detail": "Tracking loss cancels manipulation; reacquiring a held pinch does not restart it",
+      "passed": true,
+      "step": "holo-loss"
+    },
+    {
+      "detail": "Normal pointer dragging remains functional after hand tracking loss",
+      "passed": true,
+      "step": "holo-mouse"
+    },
+    {
+      "detail": "Hand settings expand within existing controls; tracking canvas cannot intercept pointers",
+      "passed": true,
+      "step": "holo-settings"
+    },
+    {
+      "detail": "Synthetic hand overlay pixels: hidden 4791, visible 9233, auto faded 4791; cursor retained",
+      "passed": true,
+      "step": "holo-skeleton"
     },
     {
       "detail": "{\"circleCollision\":true,\"swipeCollision\":true,\"paddleCollision\":true,\"comboScore\":true,\"coordinateMapping\":true,\"pinchTransitions\":true}",

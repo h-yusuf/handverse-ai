@@ -1,4 +1,5 @@
 import {loadMediaPipe,initializeLandmarker,errorText,type Landmarker} from './mediapipe';
+import {handControls} from './storage';
 import {GestureMachine,identity,type Hand,type Calibration} from './input';
 export type Tracking={status:'off'|'loading'|'active'|'error';cameraActive:boolean;message:string;hands:Hand[];fps:number;latency:number;delegate:string;devices:MediaDeviceInfo[];diagnostics?:string[]};
 export class Vision {
@@ -6,7 +7,7 @@ export class Vision {
  data:Tracking={status:'off',cameraActive:false,message:'Camera is off',hands:[],fps:0,latency:0,delegate:'—',devices:[]};
  interactionScope:'global'|'ar'|'ui'|'canvas'|'holospace'='global';
  ownsCanvasInput:((hand:Hand)=>boolean)|null=null;
- calibration:Calibration=identity;quality=30;private timer=0;private generation=0;private machines=new Map<string,GestureMachine>();private lastVideo=-1;private lastInference=0;private lastTimestamp=-1;private lastFound=0;private notifyAt=0;private frames=0;private epoch=0;
+ calibration:Calibration=identity;quality=30;private timer=0;private generation=0;private machines=new Map<string,GestureMachine>();private spatialMachines=new Map<string,GestureMachine>();private lastVideo=-1;private lastInference=0;private lastTimestamp=-1;private lastFound=0;private notifyAt=0;private frames=0;private epoch=0;
  private changes=new Set<()=>void>();private handListeners=new Set<(hands:Hand[])=>void>();
  subscribe=(listener:()=>void)=>{this.changes.add(listener);return()=>{this.changes.delete(listener);};};
  subscribeHands=(listener:(hands:Hand[])=>void)=>{this.handListeners.add(listener);return()=>{this.handListeners.delete(listener);};};
@@ -64,7 +65,7 @@ export class Vision {
  if(this.video.readyState>=2&&this.video.currentTime!==this.lastVideo&&now-this.lastInference>=1000/this.quality){
  this.lastVideo=this.video.currentTime;this.lastInference=now;
  try{const before=performance.now();const timestamp=Math.max(now,this.lastTimestamp+.001);this.lastTimestamp=timestamp;const result=await this.model.detectForVideo(this.video,timestamp);if(generation!==this.generation)return;this.data.latency=performance.now()-before;
- this.data.hands=result.landmarks.map((p,i)=>{const id=result.handedness[i]?.[0]?.categoryName||String(i);let machine=this.machines.get(id);if(!machine){machine=new GestureMachine();this.machines.set(id,machine);}return {id,confidence:result.handedness[i]?.[0]?.score??0,...machine.update(p,now,this.calibration)};}).filter(h=>h.confidence>=.6);
+ this.data.hands=result.landmarks.map((p,i)=>{const id=result.handedness[i]?.[0]?.categoryName||String(i);const machines=this.interactionScope==='holospace'?this.spatialMachines:this.machines;let machine=machines.get(id);if(!machine){machine=new GestureMachine();machines.set(id,machine);}return {id,confidence:result.handedness[i]?.[0]?.score??0,...machine.update(p,now,this.calibration,this.interactionScope==='holospace'?{options:handControls,width:innerWidth,height:innerHeight,cameraWidth:this.video.videoWidth||640,cameraHeight:this.video.videoHeight||480}:undefined)};}).filter(h=>h.confidence>=.6);
 
  if(this.data.hands.length)this.lastFound=now;this.data.message=this.data.hands.length?`${this.data.hands.length} hand${this.data.hands.length>1?'s':''} detected`:now-this.lastFound>1500?'Show your hands to the camera':'Finding your hands…';
  this.onHands(this.data.hands);if(generation!==this.generation)return;this.frames++;if(now-this.epoch>=1000){this.data.fps=this.frames*1000/(now-this.epoch);this.frames=0;this.epoch=now;}
@@ -74,6 +75,6 @@ export class Vision {
  if(generation!==this.generation)return;
  if(now-this.notifyAt>120){this.onChange();this.notifyAt=now;}this.timer=requestAnimationFrame(this.tick);
  }
- stop(){this.generation++;cancelAnimationFrame(this.timer);this.stream?.getTracks().forEach(t=>t.stop());this.stream=null;this.video.pause();this.video.srcObject=null;this.model?.close();this.model=null;this.machines.clear();this.data={...this.data,status:'off',cameraActive:false,message:'Camera is off',hands:[],fps:0,latency:0,delegate:'—'};this.onHands([]);this.onChange();}
+ stop(){this.generation++;cancelAnimationFrame(this.timer);this.stream?.getTracks().forEach(t=>t.stop());this.stream=null;this.video.pause();this.video.srcObject=null;this.model?.close();this.model=null;this.machines.clear();this.spatialMachines.clear();this.data={...this.data,status:'off',cameraActive:false,message:'Camera is off',hands:[],fps:0,latency:0,delegate:'—'};this.onHands([]);this.onChange();}
 }
 export const vision=new Vision();

@@ -6,3 +6,12 @@
 @media(max-width:1100px){.holo-landing{gap:20px}.holo-intro{padding-top:25px}.preview-note{right:-5px;width:180px}.holo-guide dl{grid-template-columns:repeat(2,1fr)}.holo-landing h1{font-size:36px}.holo-preview{min-height:410px}}
 @media(max-width:700px){.holo-landing{grid-template-columns:1fr;margin:0 auto}.holo-landing h1{font-size:38px;letter-spacing:-1.7px}.holo-intro{padding-top:8px}.holo-preview{min-height:390px}.holo-guide>p span{display:block;margin:10px 0}.holo-presence{left:12px;top:14px;padding:10px 12px}.holo-presence small{display:none}.holo-workspace .holo-exit{right:12px;top:14px;font-size:10px;padding:10px 12px}.holo-dock-area{padding-bottom:12px}.holo-dock{gap:3px;padding:7px 9px}.holo-workspace .holo-dock button{width:46px;height:46px}.holo-title{padding-left:17px}.holo-title>span{opacity:1}.holo-content{padding:8px 16px 20px}.holo-window{border-radius:23px}.music-feature{gap:15px}.music-controls{gap:3px}.music-volume{margin-left:0}.music-volume input{width:42px}.music-feature h2{font-size:24px}.video-picks img{width:66px}.holo-launcher,.holo-controls{bottom:97px}.holo-guide dl{gap:18px}.media-transport .volume-range{max-width:40px}}
 @media(prefers-reduced-motion:reduce){.holo-workspace *,.holo-landing *{animation:none!important;transition:none!important}}
+
+.holo-controls{max-height:calc(100dvh - 200px);overflow-y:auto;scrollbar-width:thin}
+.holo-hand-settings summary{cursor:pointer;padding:9px 0;font-size:12px}
+.holo-hand-settings>div{display:grid;gap:16px;padding-top:12px}
+.holo-hand-settings label{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;font-size:12px}
+.holo-hand-settings output{font-size:11px;color:#bec4cf}
+.holo-hand-settings select{width:100%;padding:9px 10px;border:1px solid #ffffff25;border-radius:9px;background:#292e36;color:#f7f7fb;font:inherit}
+.holo-hand-settings select:focus-visible,.holo-hand-settings summary:focus-visible{outline:2px solid #a8ecf7;outline-offset:3px}
+.holo-hand-settings .holo-diagnostic-toggle input{width:18px;height:18px;accent-color:#a8ecf7}

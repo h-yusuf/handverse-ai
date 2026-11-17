@@ -5,7 +5,7 @@ export class PinchGate {
  update(hand:Pick<Hand,'id'|'pinching'>){const previous=this.held.get(hand.id);this.held.set(hand.id,hand.pinching);return previous===false&&hand.pinching;}
 }
 export function interactiveAt(x:number,y:number):HTMLElement|null {
- const target=document.elementFromPoint(x,y)?.closest<HTMLElement>('button,a[href],input,select,textarea,[role="button"],[role="switch"],[data-hand-click]')??null;
+ const target=document.elementFromPoint(x,y)?.closest<HTMLElement>('button,a[href],input,select,textarea,[role="button"],[role="switch"],[data-hand-click],summary')??null;
  if(!target||!target.isConnected||target.matches(':disabled')||target.closest('[inert],[hidden],[aria-hidden="true"],[aria-disabled="true"]'))return null;
  const style=getComputedStyle(target);
  if(style.visibility!=='visible'||Number(style.opacity)===0||style.pointerEvents==='none'||!target.getClientRects().length)return null;

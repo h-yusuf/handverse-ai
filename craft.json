@@ -6,10 +6,10 @@
     "kind": "none"
   },
   "stack": "Rust + macroquad",
-  "status": "ready",
-  "note": "Ready: 3 of 4 checks pass, 15 of 15 claims hold; 1 comparison remains unverified. 1 question about the original is still open.",
+  "status": "building",
+  "note": "Getting the builder ready…",
   "created_ms": 1794801730588,
-  "updated_ms": 1794842337738,
+  "updated_ms": 1794887947934,
   "checks": [
     {
       "round": 1,
@@ -1326,14 +1326,151 @@
       "unknowns": [
         "Mechanics behavior has not been measured against app/mechanics.json."
       ]
+    },
+    {
+      "round": 20,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1794877333590
+    },
+    {
+      "round": 20,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2880×1880).",
+      "artifacts": [
+        "checks/round-0/screenshot.png"
+      ],
+      "at_ms": 1794877340064
+    },
+    {
+      "round": 20,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (Pointer moved the Pong paddle from 310.0 to 160.0), act (Popped 18 bubbles through pointer input; score 0 → 640), hud (Visible score 0640, game score 640; timer and multiplier displayed).",
+      "artifacts": [
+        "checks/round-0/self-test.json"
+      ],
+      "at_ms": 1794877370911,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-draw\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-history\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-png\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-fullscreen\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-pinch\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-launcher\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-drag\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-resize\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-loss\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-mouse\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-settings\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-skeleton\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"rules\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-webgl\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-input-isolation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-modes\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-gesture-studio\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-immersive\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-navigation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"mediapipe-runtime\"",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 20,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.",
+      "artifacts": [],
+      "at_ms": 1794877370952,
+      "unknowns": [
+        "Mechanics behavior has not been measured against app/mechanics.json."
+      ]
     }
   ],
-  "agent_session": "01a1e4e4-1c76-7752-889d-1c328395ba10",
+  "agent_session": "01a1e6fc-e0cd-73b3-985f-217ad3c4c0e8",
   "agent_session_by": "codex",
   "agent_session_deep": false,
   "capture_deep": false,
   "allowed_actions": [],
-  "last_reply": "I’ll check how the app opens and draws, add the screenshot option, then build and run it to verify that it saves a picture.\nThe app already has a screenshot command, but it waits for animation frames that can stall when the window is inactive. I’ll fix the background drawing and launch behavior, and make sure it can create the requested output folder.\nThe build and all 87 tests pass. I’m checking the actual PNG capture now; the first local run hasn’t produced a file yet, so I’m also running Craft Anything’s build check.\nThe local shell cannot connect the app to macOS window services, so it couldn’t verify the capture. Craft Anything’s check is testing it through its own runner; the build now applies focus and background drawing settings only when `--screenshot` is supplied.\nThe first check still timed out. I’ve added a screenshot-only frame timer so the app can finish its 120 drawing frames even when WebKit pauses animation callbacks for an inactive window, and I’m rebuilding to test that change.\nThe rebuilt app now also captures the frames it has already drawn, without waiting for another screen update that may never come while the window is covered. Craft Anything is checking this version now.\nThe check is still taking longer than expected. I’m adding temporary diagnostics to find out whether it stalls while drawing the frames or while saving the PNG.\nThe diagnostics show that the app renders its screen, but its background frame callbacks still don’t reach 120 in time. I’m switching screenshot mode to a native frame clock, which will drive the drawing callbacks without relying on WebKit’s background timers.\nThe native frame clock worked: the app completed 120 frames, saved a PNG, and exited. I’ve inspected the picture and confirmed it shows the arcade screen; I’m removing the temporary diagnostics and running the final check.\nScreenshot capture now passes and produces a clear 2880 × 1880 image. The gameplay self-test is also stalling on background frames, so I’m applying the same native frame clock to automated test runs before the final check.\nThe automated tests also use short JavaScript timers, which WebKit can slow down in the background. I’ve moved those timers onto the native clock during automated runs and verified frame counts, timed actions, and cancellation; normal launches still use the browser’s usual scheduling.\nThe latest check passes screenshot capture and the core gameplay test. It found two remaining drawing checks that skip work when the window is hidden; I’ve allowed those renderers to keep drawing during automated runs and am rebuilding to verify them.\nThe final check passes the build, PNG capture, and all gameplay and rendering smoke tests. Mechanics comparisons and real-camera testing remain unverified.\nFixed `--screenshot` to keep drawing without taking focus, save a PNG after about 120 frames, and exit. The final build, screenshot, and gameplay checks pass; mechanics comparisons and real-camera testing remain unverified.",
+  "last_reply": "I’ll inspect the hand-tracking pipeline, improve cursor and pinch stability, and add the optional skeleton and settings without changing the existing Liquid Glass design. Then I’ll build the app and run the available checks.\n\nThe shared tracker uses fixed smoothing, and games also consume its cursor output. I’ll give HoloSpace its own timestamp-aware filtering path so game controls retain their existing behavior, and use the design skill to match the new settings to the current interface.\n\nThe HoloSpace filter, pinch anchor, saved settings, and subtle skeleton overlay are implemented, with game filtering preserved. I’m now measuring stationary jitter and fast-movement response using synthetic landmarks, and testing pinch stability and tracking-loss recovery; these checks do not involve a physical webcam.\n\nThe synthetic samples show 73–81% less stationary cursor jitter, with a maximum lag equivalent to about 19 ms during fast movement; all 97 tests pass. I’m checking the rebuilt app next, including synthetic pinch clicks, dragging, resizing, tracking recovery, and mouse controls.\n\nThe rebuild passed, but the interaction checker found that HoloSpace ignores synthetic gestures while its test window is hidden. I’ll enable those gestures in the existing automation mode and fix a timing-sensitive paddle check, then rerun the validation.\n\nThe synthetic landmark measurements still show the same jitter reduction through the full cursor pipeline. The packaged interaction checks are running now; physical webcam behavior remains untested.\n\nThe packaged checks now confirm pinch clicks, launcher selection, dragging, resizing, tracking-loss cancellation, and mouse dragging. The remaining failure was a test that opened the settings before React had rendered the panel; I’ve added the missing wait and will run one final check.\n\nImproved cursor and pinch stability, added saved hand settings and an optional skeleton, while preserving the Liquid Glass UI. Synthetic tests measured 73–81% less jitter; the rebuild, 97 tests, and 23 interaction checks passed. Physical webcam testing and comparison against the original game mechanics remain unverified.",
   "asset_budget_usd": 5.0,
   "generate_assets": false,
   "questions": "decide"

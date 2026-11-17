@@ -13,7 +13,9 @@ export async function runGameplaySelfTest(){
   const practice=Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Try pointer practice'));
   if(!practice)throw new Error('Pointer practice control missing');practice.click();await delay(150);
   click('.start-overlay .pong-start');await delay(150);
-  const before=currentGame!().paddle;move(300,160);await delay(200);
+  const before=currentGame!().paddle;
+  // Specialized Pong input expects successive samples, as a real pointer produces.
+  for(let i=0;i<12;i++){move(300,160);await delay(25);}
   const after=currentGame!().paddle;
   steps.push({step:'move',passed:Math.abs(after-before)>50,detail:`Pointer moved the Pong paddle from ${before.toFixed(1)} to ${after.toFixed(1)}`});
   click('[aria-label="Back to arcade"]');await delay(150);click('.game-bubble');await delay(150);click('.start-overlay button');await delay(150);
@@ -24,6 +26,8 @@ export async function runGameplaySelfTest(){
   const hud=document.querySelector('.game-hud');const displayed=hud?.querySelector('strong')?.textContent?.replace(/,/g,'');
   steps.push({step:'hud',passed:Number(displayed)===game.score&&!!hud?.textContent?.includes('Time')&&!!hud?.textContent?.includes('Multiplier'),detail:`Visible score ${displayed}, game score ${game.score}; timer and multiplier displayed`});
   const air=await runAirCanvasSelfTest();steps.push(...air);
+  const {runHoloSpaceSmokeTest}=await import('./holospace/smoke-test');
+  steps.push(...await runHoloSpaceSmokeTest());
   const rules=runSelfTest();steps.push({step:'rules',passed:rules.passed,detail:JSON.stringify(rules.checks)});
  }catch(error){steps.push({step:'gameplay',passed:false,detail:String(error)});}
  return {version:1,steps};
