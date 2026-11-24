@@ -6,10 +6,10 @@
     "kind": "none"
   },
   "stack": "Rust + macroquad",
-  "status": "building",
-  "note": "Getting the builder ready…",
+  "status": "ready",
+  "note": "Ready: 3 of 4 checks pass, 23 of 23 claims hold; 1 comparison remains unverified. 1 question about the original is still open.",
   "created_ms": 1794801730588,
-  "updated_ms": 1794887947934,
+  "updated_ms": 1795506267790,
   "checks": [
     {
       "round": 1,
@@ -1463,14 +1463,178 @@
       "unknowns": [
         "Mechanics behavior has not been measured against app/mechanics.json."
       ]
+    },
+    {
+      "round": 21,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "Couldn't run the build: cargo isn't installed or isn't on your PATH.",
+      "artifacts": [],
+      "at_ms": 1795504469139
+    },
+    {
+      "round": 22,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "Couldn't run the build: cargo isn't installed or isn't on your PATH.",
+      "artifacts": [],
+      "at_ms": 1795504504298
+    },
+    {
+      "round": 23,
+      "check": "build",
+      "passed": false,
+      "similarity": null,
+      "note": "Couldn't run the build: cargo isn't installed or isn't on your PATH.",
+      "artifacts": [],
+      "at_ms": 1795504516374
+    },
+    {
+      "round": 24,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1795506198104
+    },
+    {
+      "round": 24,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2880×1880).",
+      "artifacts": [
+        "checks/round-0/screenshot.png"
+      ],
+      "at_ms": 1795506203896
+    },
+    {
+      "round": 24,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (Pointer moved the Pong paddle from 310.0 to 160.0), act (Popped 18 bubbles through pointer input; score 0 → 510), hud (Visible score 0510, game score 510; timer and multiplier displayed).",
+      "artifacts": [
+        "checks/round-0/self-test.json"
+      ],
+      "at_ms": 1795506251161,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-draw\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-history\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-png\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"air-fullscreen\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-pinch\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-launcher\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-drag\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-resize\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-loss\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-mouse\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-settings\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"holo-skeleton\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"rules\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-webgl\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-input-isolation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-modes\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-gesture-studio\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-immersive\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"ar-navigation\"",
+          "passed": true
+        },
+        {
+          "title": "Self-test step \"mediapipe-runtime\"",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 24,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 31 values (31 with a source, 0 estimated). The sheet is readable; its behavior is unverified. No runtime measurement was compared with these values. A source literal or a core-loop self-test alone cannot establish that the build uses them.",
+      "artifacts": [],
+      "at_ms": 1795506253086,
+      "unknowns": [
+        "Mechanics behavior has not been measured against app/mechanics.json."
+      ]
     }
   ],
-  "agent_session": "01a1e6fc-e0cd-73b3-985f-217ad3c4c0e8",
-  "agent_session_by": "codex",
+  "agent_session": "bf18577f-768b-4ef5-860c-49e54a8ebdd0",
+  "agent_session_by": "claude-code",
   "agent_session_deep": false,
   "capture_deep": false,
   "allowed_actions": [],
-  "last_reply": "I’ll inspect the hand-tracking pipeline, improve cursor and pinch stability, and add the optional skeleton and settings without changing the existing Liquid Glass design. Then I’ll build the app and run the available checks.\n\nThe shared tracker uses fixed smoothing, and games also consume its cursor output. I’ll give HoloSpace its own timestamp-aware filtering path so game controls retain their existing behavior, and use the design skill to match the new settings to the current interface.\n\nThe HoloSpace filter, pinch anchor, saved settings, and subtle skeleton overlay are implemented, with game filtering preserved. I’m now measuring stationary jitter and fast-movement response using synthetic landmarks, and testing pinch stability and tracking-loss recovery; these checks do not involve a physical webcam.\n\nThe synthetic samples show 73–81% less stationary cursor jitter, with a maximum lag equivalent to about 19 ms during fast movement; all 97 tests pass. I’m checking the rebuilt app next, including synthetic pinch clicks, dragging, resizing, tracking recovery, and mouse controls.\n\nThe rebuild passed, but the interaction checker found that HoloSpace ignores synthetic gestures while its test window is hidden. I’ll enable those gestures in the existing automation mode and fix a timing-sensitive paddle check, then rerun the validation.\n\nThe synthetic landmark measurements still show the same jitter reduction through the full cursor pipeline. The packaged interaction checks are running now; physical webcam behavior remains untested.\n\nThe packaged checks now confirm pinch clicks, launcher selection, dragging, resizing, tracking-loss cancellation, and mouse dragging. The remaining failure was a test that opened the settings before React had rendered the panel; I’ve added the missing wait and will run one final check.\n\nImproved cursor and pinch stability, added saved hand settings and an optional skeleton, while preserving the Liquid Glass UI. Synthetic tests measured 73–81% less jitter; the rebuild, 97 tests, and 23 interaction checks passed. Physical webcam testing and comparison against the original game mechanics remain unverified.",
+  "last_reply": "Build succeeded. Running check.Build-nya udah sukses lagi sekarang Rust-nya ke-install. Saya nggak perlu ngubah kode app sama sekali. Pengecekan juga lolos semua: app kebuka dan halaman arcade tampil normal, terus tes otomatisnya berhasil gerakin paddle Pong dan mecahin 18 gelembung di Bubble Pop sampai skornya muncul di layar.\n\nYang masih belum terverifikasi: angka-angka mekanik game belum diukur langsung saat game jalan, dan tes pakai kamera beneran dengan dua tangan juga belum dilakukan.",
   "asset_budget_usd": 5.0,
   "generate_assets": false,
   "questions": "decide"

@@ -50,12 +50,12 @@
       "step": "move"
     },
     {
-      "detail": "Popped 18 bubbles through pointer input; score 0 → 640",
+      "detail": "Popped 18 bubbles through pointer input; score 0 → 510",
       "passed": true,
       "step": "act"
     },
     {
-      "detail": "Visible score 0640, game score 640; timer and multiplier displayed",
+      "detail": "Visible score 0510, game score 510; timer and multiplier displayed",
       "passed": true,
       "step": "hud"
     },
@@ -95,7 +95,7 @@
       "step": "holo-drag"
     },
     {
-      "detail": "Synthetic held pinch resizes Notes by 69.5, 39.9 CSS px",
+      "detail": "Synthetic held pinch resizes Notes by 69.6, 39.9 CSS px",
       "passed": true,
       "step": "holo-resize"
     },
@@ -115,7 +115,7 @@
       "step": "holo-settings"
     },
     {
-      "detail": "Synthetic hand overlay pixels: hidden 4791, visible 9233, auto faded 4791; cursor retained",
+      "detail": "Synthetic hand overlay pixels: hidden 4492, visible 8970, auto faded 4486; cursor retained",
       "passed": true,
       "step": "holo-skeleton"
     },
